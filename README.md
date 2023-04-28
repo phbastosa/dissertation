@@ -3,16 +3,9 @@ Modelo para Trabalhos Acadêmicos: monografia, dissertação e tese
 
 Modelo elaborado pelo GISIS - Grupo de Imageamento Sísmico e Inversão Sísmica.
 
-Autoras:
-Bruna Carbonesi
-Danielle Martins Tostes
-Stephanie Tavares
+Autoras: Bruna Carbonesi, Danielle Martins Tostes e Stephanie Tavares
 
-Revisores:
-Prof. Marco Cetale
-Prof. Luiz Alberto Santos
-Alexandre Maul
-Felipe Timoteo da Costa
+Revisores: Prof. Marco Cetale, Prof. Luiz Alberto Santos, Alexandre Maul e Felipe Timoteo da Costa
 
 Última atualização: 18 de abril de 2023
 
@@ -67,6 +60,3 @@ Você pode ter mais ou menos capítulos, desde que faça as modificação adequa
 Pos_Textuais/
 -----------------------------------------------------------------
 Esta pasta contem os capítulos pós-textuais: apêndices e anexos. Estes elementos não são obrigatórios. Foram incluídos um de cada como exemplo.
-
-
-
