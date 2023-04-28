@@ -1,0 +1,50 @@
+%========================================================================
+% Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
+% Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
+%========================================================================
+\chapter{Revisão Bibliográfica}
+\label{ch:revisaobibliografica}
+
+Escreva aqui sua revisão de literatura. 
+
+\section{Exemplo de seção}
+\label{sec:exemplo}
+
+Na seção \ref{sec:exemplo}
+
+\subsection{Exemplo de subseção}
+
+Ao comentar sobre sua figura no texto, é importante usar o comando \verb_\ref{LabelParaCitarNoTexto}_. Ele também é utilizado para fazer referência a Tabelas, Equações, Capítulos, etc. e vai atribuir a numeração adequada ao elemento que possui aquele \textit{label}. Um exemplo de texto mencionando a figura é dado a seguir.
+
+Na Figura \ref{LabelParaCitarNoTexto}, pode-se observar um quadrado azul utilizado para exemplificar onde vai entrar a imagem.
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=.65\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
+    \caption[Titulo da imagem, como deve aparecer na lista.]{Na legenda da imagem, deve-se descrever exatamente o que se observa nela. A legenda pode se tornar um pouco longa, mas é importante incluir todas as informações que forem necessárias para seu entendimento. Lembre-se de incluir a fonte de onde a imagem foi selecionada ou adaptada/modificada. Se for uma imagem própria, incluir a fonte como: ``Fonte: O autor".}
+    \label{LabelParaCitarNoTexto}
+\end{figure}
+
+Também é possível colocar mais de uma imagem numa mesma figura, como na Figura \ref{duasfiguras}. Você pode citá-las individualmente utilizando o \textit{label} atribuído a cada uma delas. Na Figura \ref{primeirasubfig}, temos a primeira imagem e, na Figura \ref{segundasubfig}, temos a segunda imagem.
+
+\begin{figure}[h]
+	\centering
+	\subfloat[]{
+	   \label{primeirasubfig}
+		\includegraphics[width= 0.45\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
+	}
+	\subfloat[]{
+	   \label{segundasubfig}
+		\includegraphics[width= 0.45\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
+	}
+	%O que esta entre [] e o titulo da imagem da maneira como deve a aparecer na lista de ilustracoes. Entre {}, e a legenda completa da Figura.
+	\caption [Exemplo de Figura com mais de uma imagem.]{Exemplo de Figura com mais de uma imagem. a) Primeira imagem. b) Segunda imagem. Fonte: o autor.}
+	\label{duasfiguras}
+\end{figure}
+
+%Exemplo de Equação
+A famosa fórmula de Bhaskara é dada pela Equação \ref{eq:bhaskara}.
+
+\begin{equation}
+    x = \frac{-b \pm \sqrt{b^{2}-4ac}}{2a}
+    \label{eq:bhaskara}
+\end{equation}

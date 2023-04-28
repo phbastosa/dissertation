@@ -1,0 +1,166 @@
+%========================================================================
+% Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
+% Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
+%========================================================================
+%Autoras:
+%Bruna Carbonesi
+%Danielle Martins Tostes
+%Stephanie Tavares
+%
+%Revisores:
+%Prof. Marco Cetale
+%Prof. Luiz Alberto Santos
+%Alexandre Maul
+%Felipe Timoteo da Costa
+%
+%Ultima atualizacao: 18 de abril de 2023
+%============================================================
+\documentclass[a4paper, 12pt, oneside]{abntex2}
+
+\include{configuracoes}
+\include{folhadeaprovacao} %Neste arquivo devem ser preechidos os dados dos membros da banca
+
+%=================================================
+%         Informacoes do Trabalho
+%=================================================
+\autor{Nome do Autor}
+\Sobrenome{Sobrenome}
+\PrimeirosNomes{Nome1 Nome2}
+\titulo{Título Completo do Trabalho}
+\TituloEmIngles{Full Title in English}
+\instituicao{Universidade Federal Fluminense}
+\instituicaoIngles{Fluminense Federal University}
+\instituto{Instituto de Geociências}
+\departamento{Departamento de Geologia e Geofísica}
+\orientador[\textbf{Orientador}]{Prof. Dr. Fulano de Tal}
+\coorientador[\textbf{Coorientador}]{Dr. Sicrano da Silva} %se houver
+\local{Niterói}
+\data{Mês(por extenso)/Ano(números)}
+\AnoDeDefesa{Ano}
+
+% Escolha e descomente abaixo a configuracao adequada ao tipo do seu trabalho
+
+%=================== Monografia ========================
+%\preambulo{Monografia apresentada à Universidade Federal Fluminense como requisito parcial do Curso de Graduação em Geofísica para a obtenção do título de Bacharel em Geofísica.}
+%\tipotrabalho{Monografia}
+%\tipotrabalhoIngles{Monography}
+%\programa{Curso de Graduação em Geofísica}
+
+%============ Dissertacao de Mestrado ==================
+\preambulo{Dissertação apresentada à Universidade Federal Fluminense como requisito parcial do Programa de Pós-Graduação em Dinâmica dos Oceanos e da Terra para a obtenção do título de Mestre em Ciências. \\ \vspace{0.2cm} \\Área de concentração: Geologia e Geofísica.}
+\tipotrabalho{Dissertação de Mestrado}
+\tipotrabalhoIngles{Dissertation (Master of Science)}
+\programa{Programa de Pós-Graduação \\ Dinâmica dos Oceanos e da Terra (DOT)}
+
+%============== Tese de Doutorado ======================
+%\preambulo{Tese apresentada à Universidade Federal Fluminense como requisito parcial do Programa de Pós-Graduação em Dinâmica dos Oceanos e da Terra para a obtenção do título de Doutor em Ciências. \\ \vspace{0.2cm} \\Área de concentração: Geologia e Geofísica.}
+%\tipotrabalho{Tese de Doutorado}
+%\tipotrabalhoIngles{Thesis (Doctor of Science)}
+%\programa{Programa de Pós-Graduação \\ Dinâmica dos Oceanos e da Terra (DOT)}
+
+\begin{document}
+	
+% CAPA %%%%%%%%%%%%%%%%%%%%%%%
+    \imprimircapa
+    
+% FOLHA DE ROSTO %%%%%%%%%%%%%
+    \imprimirfolhaderosto
+	
+% FICHA CATALOGRÁFICA %%%%%%%% 
+    \imprimirfichacatalografica
+    %\includepdf{fichacatalografica.pdf} %opção para incluir a ficha gerada
+
+% FOLHA DE APROVAÇÃO %%%%%%%%
+%as informacoes sobre a banca devem ser incluidas no arquivo config_folhadeaprovacao.tex
+    \imprimirfolhadeaprovacao
+%    \includepdf{folhadeaprovacao.pdf} %opção para incluir a folha assinada
+	
+\setlength{\parskip}{0.5cm}	% Controle do espaçamento entre parágrafos
+% Dedicatória %%%%%%%%%%%%%%%% 
+    \include{Pre_Textuais/Dedicatoria}
+
+% Agradecimentos %%%%%%%%%%%%%% 
+    \include{Pre_Textuais/Agradecimentos}
+
+% Epígrafe %%%%%%%%%%%%%%%%%%%% 
+    \include{Pre_Textuais/Epigrafe}
+    
+% Resumos %%%%%%%%%%%%%%%%%%%%% 
+    \include{Pre_Textuais/Resumo}
+    \include{Pre_Textuais/Abstract}
+    
+% Listas de figuras, tabelas, abreviaturas, siglas e símbolos
+    \include{Pre_Textuais/Listas}
+
+% Sumário %%%%%%%%%%%%%%%%%%%%%
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\thispagestyle{empty}
+
+\textual
+
+\justify \fonteTexto
+\include{Textos/Introducao}
+\include{Textos/RevisaoBibliografica}
+\include{Textos/Metodologia}
+\include{Textos/Resultados}
+\include{Textos/Discussoes}
+\include{Textos/Conclusao}
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+% ----------------------------------------------------------
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{referencias}
+
+% ----------------------------------------------------------
+% Glossário
+% ----------------------------------------------------------
+%
+% Consulte o manual da classe abntex2 para orientações sobre o glossário.
+%
+%\glossary
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+% ---
+% Inicia os apêndices
+% ---
+\begin{apendicesenv}
+
+% Imprime uma página indicando o início dos apêndices
+\partapendices
+
+\include{Pos_Textuais/apendiceA}
+
+\end{apendicesenv}
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+
+% ---
+% Inicia os anexos
+% ---
+\begin{anexosenv}
+
+% Imprime uma página indicando o início dos anexos
+\partanexos
+
+\include{Pos_Textuais/anexoA}
+
+\end{anexosenv}
+
+%---------------------------------------------------------------------
+% INDICE REMISSIVO
+%---------------------------------------------------------------------
+%\phantompart
+%\printindex
+%---------------------------------------------------------------------
+
+\end{document}

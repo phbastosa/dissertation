@@ -1,0 +1,56 @@
+%========================================================================
+% Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
+% Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
+%========================================================================
+%%%Configuracao da Folha de Aprovacao
+\newcommand{\imprimirfolhadeaprovacao}{
+    \newpage
+    \newgeometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=1.5cm}
+    \begin{center}
+        \MakeUppercase{\fonteAutor \imprimirautor}
+        
+        \vspace{0.5cm}
+        \MakeUppercase{\fonteNormalSize \textbf{\imprimirtitulo}} 
+        
+        \vspace{1cm}
+            \hspace{.45\textwidth}
+            \begin{minipage}{.5\textwidth}
+	    \small
+            \SingleSpacing
+            \imprimirpreambulo
+            
+            \end{minipage}
+            \vspace{2cm}
+        
+            \fontsize{11}{10}\selectfont Aprovada em xx/\imprimirdata \space pela banca examinadora abaixo:
+            
+            \vspace{1cm}
+            \noindent\makebox[\linewidth]{\rule{10cm}{0.5pt}} 
+            \textbf{\imprimirorientador\ (Orientador)}\\
+            UFF / DOT / GISIS
+            
+            \vspace{1cm}
+            \noindent\makebox[\linewidth]{\rule{10cm}{0.5pt}} 
+            \textbf{\imprimircoorientador\ (Coorientador)}\\
+            Empresa ou Instituição de Origem
+            
+            \vspace{1cm}
+            \noindent\makebox[\linewidth]{\rule{10cm}{0.5pt}} 
+            \textbf{Prof. Dr. José das Couves}\\
+            Empresa ou Instituição de Origem
+            
+            \vspace{1cm}
+            \noindent\makebox[\linewidth]{\rule{10cm}{0.5pt}} 
+            \textbf{Dra. Maria das Graças}\\
+            Empresa ou Instituição de Origem
+            
+            \vspace{1cm}
+            \noindent\makebox[\linewidth]{\rule{10cm}{0.5pt}} 
+            \textbf{Me. Mestre dos Magos}\\
+            Empresa ou Instituição de Origem
+        
+        \vfill
+	\fonteLocalData \textbf{\imprimirlocal \\ \imprimirdata}
+    \end{center}
+    \restoregeometry
+}

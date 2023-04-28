@@ -1,0 +1,345 @@
+%========================================================================
+% Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
+% Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
+%========================================================================
+% ---
+% PACOTES
+% ---
+\usepackage[brazil]{babel}
+\usepackage{helvet}
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{nomencl} 			% Lista de simbolos
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{sidecap}			% mudar posição legenda
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{setspace}
+\usepackage{nonfloat}
+\usepackage[alf,abnt-substyle=GISIS]{abntex2cite}
+\usepackage{xspace}
+\usepackage{amsfonts, amssymb,amsmath}
+\usepackage{xspace}
+\usepackage{array,booktabs}
+\usepackage{marginnote}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage[small]{caption}
+\usepackage[table]{xcolor}
+%\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{multicol}
+\setlength{\columnsep}{1cm}
+\usepackage{colortbl}
+\usepackage{lipsum}
+\usepackage{lastpage}
+\usepackage{titlesec}
+\usepackage{subfig}
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage[section]{placeins} % para que as imagens fiquem na seção
+\usepackage{geometry}
+
+% ---
+% NEW COMMANDS
+% ---
+\renewcommand{\familydefault}{\sfdefault}
+
+% Configuração PDF e Links clicáveis %%%%%%%%%%%%
+\makeatletter
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+}
+\AtBeginDocument{
+\hypersetup{
+	pdftitle={\imprimirtitulo},
+	pdfauthor={\imprimirautor},
+	pdfsubject={\imprimirpreambulo},
+	pdfcreator={LaTeX with abnTeX2},
+}
+}
+
+\makeatother
+
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+%% How many levels of section head would you like to appear in the Table of Contents?
+%% 0= chapter titles, 1= section titles, 2= subsection titles, 3= subsubsection titles.
+\setcounter{tocdepth}{2}
+
+%======== Marca d'Água ================
+\newcommand{\marcadaguaTemplateGISIS}{
+\usepackage{draftwatermark}
+\SetWatermarkAngle{45} 
+\SetWatermarkLightness{.8} 
+\SetWatermarkFontSize{6cm} 
+\SetWatermarkScale{0.5} 
+\SetWatermarkText{Template GISIS}
+}
+%======================================
+
+% Tamanhos da Fonte
+\newcommand{\numLarge}{\fontsize{56}{18}\selectfont}
+\newcommand{\chapterLarge}{\fontsize{18}{18}\selectfont}
+\newcommand{\fonteResumo}{\fontsize{12}{14}\selectfont}
+\newcommand{\fonteDedicatoria}{\fontsize{11}{13}\selectfont }
+\newcommand{\fonteAgradecimentos}{\fontsize{12}{12}\selectfont }
+\newcommand{\fonteEpigrafe}{\fontsize{12}{13}\selectfont}
+\newcommand{\fonteAutor}{\fontsize{14}{14}\selectfont}
+\newcommand{\fonteTituloCapa}{\fontsize{14}{14}\selectfont}
+\newcommand{\fonteTipoTrabalho}{\fontsize{14}{14}\selectfont}
+\newcommand{\fontePrograma}{\fontsize{14}{14}\selectfont}
+\newcommand{\fonteLocalData}{\fontsize{12}{14}\selectfont}
+\newcommand{\fonteNormalSize}{\fontsize{12}{12}\selectfont}
+\newcommand{\fonteTexto}{\fontsize{12}{16}\selectfont }
+\newcommand{\fonteLista}{\huge }
+
+%Outras definicoes
+\makeatletter
+
+\def\programa#1{\gdef\@programa{#1}}
+\def\@programa{\@latex@warning@no@line{No \noexpand\programa given}}
+\newcommand{\imprimirprograma}{\@programa}
+
+\def\instituto#1{\gdef\@instituto{#1}}
+\def\@instituto{\@latex@warning@no@line{No \noexpand\instituto given}}
+\newcommand{\imprimirinstituto}{\@instituto}
+
+\def\departamento#1{\gdef\@departamento{#1}}
+\def\@departamento{\@latex@warning@no@line{No \noexpand\departamento given}}
+\newcommand{\imprimirdepartamento}{\@departamento}
+
+\def\instituicaoIngles#1{\gdef\@instituicaoIngles{#1}}
+\def\@instituicaoIngles{\@latex@warning@no@line{No \noexpand\instituicaoIngles given}}
+\newcommand{\imprimirinstituicaoIngles}{\@instituicaoIngles}
+
+\def\tipotrabalhoIngles#1{\gdef\@tipotrabalhoIngles{#1}}
+\def\@tipotrabalhoIngles{\@latex@warning@no@line{No \noexpand\tipotrabalhoIngles given}}
+\newcommand{\imprimirtipotrabalhoIngles}{\@tipotrabalhoIngles}
+
+\def\Sobrenome#1{\gdef\@Sobrenome{#1}}
+\def\@Sobrenome{\@latex@warning@no@line{No \noexpand\Sobrenome given}}
+\newcommand{\imprimirSobrenome}{\@Sobrenome}
+
+\def\PrimeirosNomes#1{\gdef\@PrimeirosNomes{#1}}
+\def\@PrimeirosNomes{\@latex@warning@no@line{No \noexpand\PrimeirosNomes given}}
+\newcommand{\imprimirPrimeirosNomes}{\@PrimeirosNomes}
+
+\def\AnoDeDefesa#1{\gdef\@AnoDeDefesa{#1}}
+\def\@AnoDeDefesa{\@latex@warning@no@line{No \noexpand\AnoDeDefesa given}}
+\newcommand{\imprimirAnoDeDefesa}{\@AnoDeDefesa}
+
+\def\TituloEmIngles#1{\gdef\@TituloEmIngles{#1}}
+\def\@TituloEmIngles{\@latex@warning@no@line{No \noexpand\TituloEmIngles given}}
+\newcommand{\imprimirTituloEmIngles}{\@TituloEmIngles}
+\makeatother
+
+%%%%%%%%%
+\geometry{
+	a4paper,
+	left=2.5cm,
+	right=2.5cm,
+	top= 2.5cm,
+	bottom=2.5cm
+}
+
+\setsidefootheight{100mm}
+\setlength{\parindent}{0.9cm}
+
+% DEFINIÇÃO DAS CORES %%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{lightgray}{RGB}{236,236,236}
+\definecolor{mediumgray}{RGB}{153,153,153}
+\definecolor{black}{RGB}{0,0,0}
+\definecolor{gray90}{RGB}{26,26,26}
+\definecolor{darkgray}{RGB}{128,128,128}
+\definecolor{gray}{RGB}{179,179,179}
+\definecolor{aquamarineclaro}{RGB}{7,160,152} 
+\definecolor{aquamarineescuro}{RGB}{4,142,135} 
+\definecolor{TopoTabela}{RGB}{3,104,99} 
+\definecolor{aquamarinebemclaro}{RGB}{235,252,251}
+\definecolor{azulescuro}{RGB}{43,50,131}
+\definecolor{azulmedio}{RGB}{163,204,204}
+\definecolor{azulclaro}{RGB}{35,185,214}
+\definecolor{azulUFF}{RGB}{0,90,171}
+\definecolor{vermelho}{RGB}{183,25,24}
+\definecolor{verde}{RGB}{67,165,22}
+
+%%%%%% ESTILOS %%%%%%
+%%%%%% ESTILO PARA CAPÍTULO %%%%%%
+\makepagestyle{meuestiloCapitulo}
+	\makeoddhead{meuestiloCapitulo} %%pagina ímpar ou com oneside
+		{}
+		{}
+		{} 
+	%% rodapé
+	\makeoddfoot{meuestiloCapitulo} %%pagina ímpar ou com oneside
+		{}
+		{}
+		{}
+
+\makepagestyle{meuestilo}
+	%%cabeçalhos
+%	\makeevenhead{meuestilo} %%pagina par
+%		{}
+%		{}
+%		{}
+%	\makeoddhead{meuestilo} %%pagina ímpar ou com oneside
+%		{}
+%		{}
+%		{}
+%	\makeheadrule{meuestilo}{\textwidth}{\normalrulethickness} %linha
+	
+
+%% rodapé
+\makeoddfoot{meuestilo} %%pagina ímpar ou com oneside
+	{\chaptertitle}
+	{}
+	{\thepage}
+	%\makefootrule{meuestilo}{\textwidth}{\normalrulethickness}{\footruleskip}
+
+
+%%%Configuracao da Capa
+\renewcommand{\imprimircapa}{
+    \newgeometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=1.5cm}
+    \begin{capa}
+    \begin{center}
+	\begin{table}[h]
+        \begin{tabular}{ll}
+            \multicolumn{1}{r}{\fontsize{20pt}{64pt}\selectfont} &  \multirow{4}{*}{\includegraphics[width=2.2cm]{Imgs/0_Logos/UFF_brasao.png}} \\
+            \multicolumn{1}{r}{\MakeUppercase{\fontsize{14pt}{64pt}\selectfont\imprimirinstituicao}} &\\[1ex]
+            \multicolumn{1}{r}{\MakeUppercase{\fontsize{14pt}{64pt}\selectfont \imprimirinstituto}} &\\[1ex]
+            
+            \multicolumn{1}{r}{\MakeUppercase{\fontsize{14pt}{64pt}\selectfont \imprimirdepartamento}} & 
+        \end{tabular}
+    \end{table}
+    \vspace{4cm}
+    \MakeUppercase{\fonteAutor \imprimirautor} 
+    
+    \vspace{3cm}
+	\MakeUppercase{\fonteTituloCapa \textbf{\imprimirtitulo}} 
+	
+	%\vspace{6cm}
+	\vfill
+	\MakeUppercase{\fonteTipoTrabalho \imprimirtipotrabalho}
+	
+	\vspace{2cm}
+	\MakeUppercase{\fontePrograma \imprimirprograma }
+	
+	\vspace{3cm}
+	\fonteLocalData \textbf{\imprimirlocal \\ \imprimirdata}
+	
+	\end{center}
+    
+    \end{capa}
+    \restoregeometry
+}
+
+%%%Configuracao da Folha de Rosto
+\makeatletter
+\renewcommand{\imprimirfolhaderosto}{
+    \newgeometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=1.5cm}
+    \begin{center}
+        \MakeUppercase{\fonteAutor \imprimirautor}
+        
+        \vspace{5.3cm}
+        \MakeUppercase{\fonteTituloCapa \textbf{\imprimirtitulo}} 
+        
+        \vspace{1cm}
+        \abntex@ifnotempty{\imprimirpreambulo}{%
+            \hspace{.45\textwidth}
+            \begin{minipage}{.5\textwidth}
+            \small
+            \SingleSpacing
+            \imprimirpreambulo
+            \end{minipage}%
+            \vspace*{\fill}
+        }%
+        
+        \abntex@ifnotempty{\imprimirorientadorRotulo}{%
+            \hspace{.45\textwidth}
+            \begin{minipage}{.5\textwidth}
+            \fonteNormalSize \imprimirorientadorRotulo\\
+            \imprimirorientador
+            
+            \vspace{0.5cm}
+            \imprimircoorientadorRotulo\\
+            \imprimircoorientador
+            \end{minipage}%
+            \vspace*{\fill}
+        }%
+        
+        \vfill
+	\fonteLocalData \textbf{\imprimirlocal \\ \imprimirdata}
+    \end{center}
+    \restoregeometry
+    }
+\makeatother
+
+%%%Configuracao da Ficha Catalografica
+\newcommand{\imprimirfichacatalografica}{
+
+\newpage
+\begin{fichacatalografica}
+	\vspace*{\fill}					% Posição vertical
+	\hrule							% Linha horizontal
+	\begin{center}					% Minipage Centralizado
+	{\huge \color{red} \textbf{Inserir a ficha catalografica gerada pelo SDC/BIG da UFF}}
+	
+	\end{center}
+	\hrule
+\end{fichacatalografica}
+}
+
+%================== Capa - Template =======================
+\newcommand{\imprimircapatemplate}{
+
+\newpage
+
+\begin{center}
+\includegraphics[width=4cm]{Imgs/0_Logos/Logo_GISIS_topo_v2.png} \\
+\vspace{.5cm}
+\textbf{\large Template do GISIS para monografias (TCC), dissertações de mestrado e teses de doutorado}    
+
+\vfill
+
+\MakeUppercase{Autoras:}
+\begin{itemize}
+    \item Geofísica Bruna Carbonesi
+    \item Dra. Danielle Martins Tostes
+    \item Stephanie Tavares
+\end{itemize}
+
+\MakeUppercase{Revisores:}
+
+\begin{itemize}
+    \item Dr. Alexandre Maul
+    \item Dr. Felipe Timóteo
+    \item Prof. Dr. Luiz Alberto Santos
+    \item Prof. Dr. Marco Cetale
+\end{itemize}
+
+\vfill
+
+\textbf{\large Venha fazer parte do GISIS!} 
+
+\vfill
+
+\MakeUppercase{Professores:}
+\begin{itemize}
+    \item Dr. Alexandre Motta
+    \item Dr. Leonardo Miquelutti
+    \item Dr. Luiz Alberto Santos
+    \item Dr. Marco Cetale
+    \item Dr. Roger Matsumoto
+\end{itemize}
+
+\end{center}
+\newpage
+%=====================================
+}
