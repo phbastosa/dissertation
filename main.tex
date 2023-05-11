@@ -1,7 +1,7 @@
-%========================================================================
+% ========================================================================
 % Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
 % Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
-%========================================================================
+% ========================================================================
 %Autoras:
 %   Bruna Carbonesi
 %   Danielle Martins Tostes
@@ -15,6 +15,7 @@
 %
 %Ultima atualizacao: 18 de abril de 2023
 %============================================================
+
 \documentclass[a4paper, 12pt, oneside]{abntex2}
 
 \include{configuracoes}
@@ -49,48 +50,48 @@
 %============ Dissertacao de Mestrado ==================
 \preambulo{Dissertação apresentada à Universidade Federal Fluminense como requisito parcial do Programa de Pós-Graduação em Dinâmica dos Oceanos e da Terra para a obtenção do título de Mestre em Ciências. \\ \vspace{0.2cm} \\Área de concentração: Geologia e Geofísica.}
 \tipotrabalho{Dissertação de Mestrado}
-\tipotrabalhoIngles{Dissertation (Master of Science)}
+\tipotrabalhoIngles{Dissertation (MSc.: Master of Science)}
 \programa{Programa de Pós-Graduação \\ Dinâmica dos Oceanos e da Terra (DOT)}
 
 %============== Tese de Doutorado ======================
 %\preambulo{Tese apresentada à Universidade Federal Fluminense como requisito parcial do Programa de Pós-Graduação em Dinâmica dos Oceanos e da Terra para a obtenção do título de Doutor em Ciências. \\ \vspace{0.2cm} \\Área de concentração: Geologia e Geofísica.}
 %\tipotrabalho{Tese de Doutorado}
-%\tipotrabalhoIngles{Thesis (Doctor of Science)}
+%\tipotrabalhoIngles{Thesis (PhD.: Philosophy Doctor)}
 %\programa{Programa de Pós-Graduação \\ Dinâmica dos Oceanos e da Terra (DOT)}
 
 \begin{document}
-	
+
 % CAPA %%%%%%%%%%%%%%%%%%%%%%%
-    \imprimircapa
-    
+\imprimircapa
+
 % FOLHA DE ROSTO %%%%%%%%%%%%%
-    \imprimirfolhaderosto
-	
+\imprimirfolhaderosto
+
 % FICHA CATALOGRÁFICA %%%%%%%% 
-    \imprimirfichacatalografica
-    %\includepdf{fichacatalografica.pdf} %opção para incluir a ficha gerada
+\imprimirfichacatalografica
+%\includepdf{fichacatalografica.pdf} %opção para incluir a ficha gerada
 
 % FOLHA DE APROVAÇÃO %%%%%%%%
 %as informacoes sobre a banca devem ser incluidas no arquivo config_folhadeaprovacao.tex
-    \imprimirfolhadeaprovacao
+\imprimirfolhadeaprovacao
 %    \includepdf{folhadeaprovacao.pdf} %opção para incluir a folha assinada
-	
+
 \setlength{\parskip}{0.5cm}	% Controle do espaçamento entre parágrafos
 % Dedicatória %%%%%%%%%%%%%%%% 
-    \include{Pre_Textuais/Dedicatoria}
+\include{Pre_Textuais/Dedicatoria}
 
 % Agradecimentos %%%%%%%%%%%%%% 
-    \include{Pre_Textuais/Agradecimentos}
+\include{Pre_Textuais/Agradecimentos}
 
 % Epígrafe %%%%%%%%%%%%%%%%%%%% 
-    \include{Pre_Textuais/Epigrafe}
-    
+\include{Pre_Textuais/Epigrafe}
+
 % Resumos %%%%%%%%%%%%%%%%%%%%% 
-    \include{Pre_Textuais/Resumo}
-    \include{Pre_Textuais/Abstract}
-    
+\include{Pre_Textuais/Resumo}
+\include{Pre_Textuais/Abstract}
+
 % Listas de figuras, tabelas, abreviaturas, siglas e símbolos
-    \include{Pre_Textuais/Listas}
+\include{Pre_Textuais/Listas}
 
 % Sumário %%%%%%%%%%%%%%%%%%%%%
 \pdfbookmark[0]{\contentsname}{toc}
@@ -134,10 +135,10 @@
 % ---
 \begin{apendicesenv}
 
-% Imprime uma página indicando o início dos apêndices
-\partapendices
+    % Imprime uma página indicando o início dos apêndices
+    \partapendices
 
-\include{Pos_Textuais/apendiceA}
+    \include{Pos_Textuais/apendiceA}
 
 \end{apendicesenv}
 % ----------------------------------------------------------
@@ -149,10 +150,10 @@
 % ---
 \begin{anexosenv}
 
-% Imprime uma página indicando o início dos anexos
-\partanexos
+    % Imprime uma página indicando o início dos anexos
+    \partanexos
 
-\include{Pos_Textuais/anexoA}
+    \include{Pos_Textuais/anexoA}
 
 \end{anexosenv}
 

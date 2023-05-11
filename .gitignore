@@ -5,3 +5,6 @@
 *.log
 *.lot
 *.toc
+*.bbl
+*.fdb_latexmk
+*.fls
