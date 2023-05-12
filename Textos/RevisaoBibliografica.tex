@@ -5,113 +5,116 @@
 \chapter{Revisão Bibliográfica}
 \label{ch:revisaobibliografica}
 
+A modelagem e tomografia sísmica são técnicas essenciais na exploração de recursos naturais subterrâneos e na caracterização da subsuperfície terrestre. A tomografia sísmica é um método não invasivo que permite mapear as propriedades físicas do subsolo através da análise das ondas sísmicas geradas por fontes controladas. Um dos principais desafios na tomografia sísmica é a obtenção de informações precisas sobre as trajetórias das ondas sísmicas e suas velocidades de propagação em diferentes camadas geológicas. Nesse sentido, a equação \textit{eikonal}  é uma ferramenta fundamental para a modelagem e inversão e imageamento sísmico, pois descreve as frentes de onda e permite calcular os tempos de percurso das ondas sísmicas. Neste capítulo é explorado a equação eikonal, três resoluções numéricas e sua aplicação na tomografia de refração. Ao explorar esses tópicos, este capítulo fornecerá abrangentes conceitos utilizados na geração dos resultados deste trabalho.
+
 \section{Modelagem sísmica}
 
+equação analítica; limitações
 
-
+equações numéricas;
+	
+frente de onda completa (complexidade do meio)
+	
+simplificação da primeira chegada (limitações do meio)
 
 \subsection*{Equação da onda para meios acústicos}
 
+equação completa
 
-
+resolução por diferenças finitas
 
 \subsection*{Equação analítica para ondas refratadas}
 
+livro do kearey 
 
-
+variações para interfaces como mostra o livro
 
 \subsection*{Equação \textit{eikonal}}
 
+partir da equação da onda em meios acústicos
 
-
+eikonal e transporte
 
 \subsection*{Método clássico}
 
+podvin e lecomte 1991 
 
-
+desenvolvimento com o algoritmo time3d
 
 \subsection*{\textit{Fast Iterative Method}}
 
+jeong e whitaker 2008
 
-
+desenvolvimento com a implementação 
 
 \subsection*{\textit{Fast Sweeping Method}}
+
+original fast sweeping method
+
+desenvolvimento com a implementação
+
+por último mostrar noble et al 2014
+
+operadores mais precisos
+
+
+
+\subsection*{Comparação numérica}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 11cm, height = 10cm]{Imgs/RevisaoBibliografica/modelGeometry.png}
+	\caption{Modelo empregado no teste de precisão e performance.}
+	\label{fig:configurationNumericalComparison}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=8cm,height=3.5cm]{Imgs/RevisaoBibliografica/precision_direct.png}\label{fig:rnca}}
+	\subfloat[]{\includegraphics[width=8cm,height=3.5cm]{Imgs/RevisaoBibliografica/reciprocity.png}\label{fig:rncb}}
+	
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_pod_direct.png}\label{fig:rncc}}
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_pod_reciprocity.png}\label{fig:rncd}}
+	
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fim_direct.png}\label{fig:rnce}}
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fim_reciprocity.png}\label{fig:rncf}}
+	
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_direct.png}\label{fig:rncg}}
+	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_reciprocity.png}\label{fig:rnch}}
+	
+	\caption{Comparação de precisão entre os métodos numéricos estudados.}
+	\label{fig:resultsNumericalComparison}
+\end{figure}
+
+
+
 
 
 
 
 \section{Inversão tomográfica}
 
-% Tipos de tomografia (reflexão, difração, transmissão e refração)
+Tipos de tomografia (reflexão, difração, transmissão e refração)
 
-
-
-
+trabalhos do GISIS
 
 \subsection*{Tomografia de refração}
-% Discretização do modelo
-% Raios ilustrativos
-% Função objetivo e linearização
-% Regularização 
-% Resolução do sistema linear iterativamente
+Discretização do modelo
+
+Raios ilustrativos
+
+Função objetivo e linearização
+
+Regularização 
+
+Resolução do sistema linear iterativamente
 
 \subsection*{Obtenção do dado observado}
-% picking manual
-% picking por aprendizado de máquina
-% picking por equações algébricas que relacionam energia (sta/lta - espectro) 
 
+tipos de picking (manual, analítico, machine learning)
+
+formulação utilizada
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-%Escreva aqui sua revisão de literatura. 
-%
-%\section{Exemplo de seção}
-%\label{sec:exemplo}
-%
-%Na seção \ref{sec:exemplo}
-%
-%\subsection{Exemplo de subseção}
-%
-%Ao comentar sobre sua figura no texto, é importante usar o comando \verb_\ref{LabelParaCitarNoTexto}_. Ele também é utilizado para fazer referência a Tabelas, Equações, Capítulos, etc. e vai atribuir a numeração adequada ao elemento que possui aquele \textit{label}. Um exemplo de texto mencionando a figura é dado a seguir.
-%
-%Na Figura \ref{LabelParaCitarNoTexto}, pode-se observar um quadrado azul utilizado para exemplificar onde vai entrar a imagem.
-%\begin{figure}[!h]
-%    \centering
-%    \includegraphics[width=.65\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
-%    \caption[Titulo da imagem, como deve aparecer na lista.]{Na legenda da imagem, deve-se descrever exatamente o que se observa nela. A legenda pode se tornar um pouco longa, mas é importante incluir todas as informações que forem necessárias para seu entendimento. Lembre-se de incluir a fonte de onde a imagem foi selecionada ou adaptada/modificada. Se for uma imagem própria, incluir a fonte como: ``Fonte: O autor".}
-%    \label{LabelParaCitarNoTexto}
-%\end{figure}
-%
-%Também é possível colocar mais de uma imagem numa mesma figura, como na Figura \ref{duasfiguras}. Você pode citá-las individualmente utilizando o \textit{label} atribuído a cada uma delas. Na Figura \ref{primeirasubfig}, temos a primeira imagem e, na Figura \ref{segundasubfig}, temos a segunda imagem.
-%
-%\begin{figure}[h]
-%	\centering
-%	\subfloat[]{
-%	   \label{primeirasubfig}
-%		\includegraphics[width= 0.45\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
-%	}
-%	\subfloat[]{
-%	   \label{segundasubfig}
-%		\includegraphics[width= 0.45\textwidth]{Imgs/RevisaoBibliografica/ExemploImagem.png}
-%	}
-%	%O que esta entre [] e o titulo da imagem da maneira como deve a aparecer na lista de ilustracoes. Entre {}, e a legenda completa da Figura.
-%	\caption [Exemplo de Figura com mais de uma imagem.]{Exemplo de Figura com mais de uma imagem. a) Primeira imagem. b) Segunda imagem. Fonte: o autor.}
-%	\label{duasfiguras}
-%\end{figure}
-%
-%%Exemplo de Equação
-%A famosa fórmula de Bhaskara é dada pela Equação \ref{eq:bhaskara}.
-%
-%\begin{equation}
-%    x = \frac{-b \pm \sqrt{b^{2}-4ac}}{2a}
-%    \label{eq:bhaskara}
-%\end{equation}
