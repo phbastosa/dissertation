@@ -1,0 +1,70 @@
+Brainstorm da dissertação:
+
+Escrever nome do autor e orientadores.
+Aplicar legenda nas figuras.
+Recolher as referências necessárias.
+
+Revisão Bibliográfica
+	
+	Modelagem sísmica
+		Explicação entre analítico x numérico
+		Equação da onda para meios acústicos
+		Simplificação para equação eikonal
+		Sísmica de refração
+		Equação analítica para as ondas refratadas
+		Método clássico
+		Fast Iterative Method
+		Fast Sweeping Method
+	
+	Inversão tomográfica
+		Tipos de tomografia
+			Reflexão (citar papers)
+			Difração (citar papers)
+			Refração (citar papers)
+		Tomografia de refração
+			Discretização do modelo
+				Problema ilustrativo
+			Função objetivo e linearização
+			Regularização
+			Resolução do sistema linear 
+			Método tomográfico - flowchart
+		Obtenção do dado observado
+			Tipos de picking 
+				(manual, analítico, ML)
+			Formulação utilizada
+			
+Metodologia
+	Introdução do capítulo
+	Construção dos modelos de velocidade
+	Geometria de aquisição
+	Dado observado sintético
+	Configuração do esquema de inversão
+	
+Resultados
+	Introdução do capítulo 
+	Inversão com malha esparsa
+	Inversão com malha refinada
+	Análise geral dos modelos recuperados	
+
+Discussões
+	Introdução
+	Aprtesentação do esquema
+	Análise da convergência
+	Análise da inline 
+	Análise da xline
+	Análise dos traços
+
+Conclusões
+	Menos de uma página
+		
+
+Introdução
+	Motivação
+	Objetivos
+	Estrutura da dissertação
+
+
+Escrever lista de símbolos
+Escrever Lista de abreviaturas e siglas.
+Escrever resumo em português.
+Escrever resumo em inglês.
