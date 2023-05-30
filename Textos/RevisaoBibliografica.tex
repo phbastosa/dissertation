@@ -17,46 +17,91 @@ frente de onda completa (complexidade do meio)
 	
 simplificação da primeira chegada (limitações do meio)
 
+\cite{rosa2010analise}
+\cite{sheriff1995exploration}
+
+
+
+
 \subsection*{Equação da onda para meios acústicos}
 
 equação completa
 
 resolução por diferenças finitas
 
+\cite{igel2017computational}
+
+
+
+
+
 \subsection*{Equação analítica para ondas refratadas}
 
-livro do kearey 
+livro do kearey \cite{kearey2002introduction}
 
-variações para interfaces como mostra o livro
+
+
+
+
 
 \subsection*{Equação \textit{eikonal}}
 
 partir da equação da onda em meios acústicos
 
+\cite{cerveny2003seismic}
+\cite{rawlinson2008seismic}
+
 eikonal e transporte
+
+
+
+
 
 \subsection*{Método clássico}
 
-podvin e lecomte 1991 
+\cite{vidale1988finite}
+\cite{podvin1991finite}
+\cite{afnimar2000finite}
+\cite{tryggvason2006travel}
 
 desenvolvimento com o algoritmo time3d
 
+
+
+
+
+
+
+
 \subsection*{\textit{Fast Iterative Method}}
 
-jeong e whitaker 2008
+\cite{jeong2008fast}
+\cite{sethian1999fast}
+
+\cite{fu2011fast, fu2013fast}
+
+\cite{dang2014fast, hong2016multi, hong2022mg}
+
+\cite{cai2023improved}
 
 desenvolvimento com a implementação 
+
+
+
+
+
 
 \subsection*{\textit{Fast Sweeping Method}}
 
 original fast sweeping method
 
-desenvolvimento com a implementação
+\cite{zhao2005fast}
 
-por último mostrar noble et al 2014
+\cite{zhao2007parallel}
 
-operadores mais precisos
+\cite{detrixhe2013parallel}
 
+\cite{noble2014accurate}
 
 
 \subsection*{Comparação numérica}
@@ -84,7 +129,7 @@ operadores mais precisos
 	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_direct.png}\label{fig:rncg}}
 	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_reciprocity.png}\label{fig:rnch}}
 	
-	\caption{Comparação de precisão entre os métodos numéricos estudados. (a)}
+	\caption{Comparação de precisão entre os métodos numéricos estudados. (a) Mapeamento de todas as chegadas para os métodos numéricos testados para os espaçamentos estudados. (b) Estudo de reciprocidade utilizando o espaçamento de 25 m. (c) Escala do erro para as chegadas em diferentes espaçamentos e (d) tempo direto e recíproco utilizando a formulação de \citeonline{podvin1991finite}. (e) Escala do erro e (f) estudo de reciprocidade para a formulação de \citeonline{jeong2008fast}. (g) Escala do erro e (h) estudo de reciprocidade para a formulação de \citeonline{noble2014accurate}.}
 	\label{fig:resultsNumericalComparison}
 \end{figure}
 
@@ -98,23 +143,52 @@ operadores mais precisos
 
 Tipos de tomografia (reflexão, difração, transmissão e refração)
 
+
+
+
+
+
+
 trabalhos do GISIS
 
-\subsection*{Tomografia de refração}
-Discretização do modelo
+\cite{santos2012tomography}
+\cite{bulhoes2021efeitos}
 
-Raios ilustrativos
+
+
+teoria de inversão
 
 Função objetivo e linearização
 
 Regularização 
 
-Resolução do sistema linear iterativamente
+\cite{seo2012nonlinear}
+\cite{sain2023active}
+
+
+
+least squares conjugate gradient
+
+\cite{saad2003iterative}
+
+
+
+
+\subsection*{Tomografia de refração}
+
+Discretização do modelo
+
+Raios ilustrativos
+
+
 
 \subsection*{Obtenção do dado observado}
+
+
 
 tipos de picking (manual, analítico, machine learning)
 
 formulação utilizada
- 
- 
+
+\cite{pan2019automatic} 
+\cite{qin2021first} 
