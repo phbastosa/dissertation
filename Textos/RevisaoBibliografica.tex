@@ -9,27 +9,53 @@ A modelagem e tomografia sísmica são técnicas essenciais na exploração de r
 
 \section{Modelagem sísmica}
 
-equação analítica; limitações
-
-equações numéricas;
-	
-frente de onda completa (complexidade do meio)
-	
-simplificação da primeira chegada (limitações do meio)
-
-\cite{rosa2010analise}
-\cite{sheriff1995exploration}
-
-
-
+Muitos fenômenos físicos tem suas simplificações e condições para serem simulados computacionalmente. O método sísmico parte do princípio da propagação de ondas mecânicas geradas a partir de uma fonte explosiva, sendo registradas em receptores posicionados na superfície da terra ou no fundo marinho \cite{sheriff1995exploration, rosa2010analise}. Um modelo de propriedades físicas de subsuperfície é necessário para a simulação computacional. Considerando a simplificação da equação da onda para meios acústicos e isotrópicos, onde a propriedade do meio são as velocidades da onda P, as frentes de onda podem ser geradas para realizar estudos sintéticos experimentais. Existem formatos de solução para uma equação que rege um fenômeno físico, dois deles são o caso analítica e o caso numérico. A solução analítica de um problema mostra a resposta exata do fenômeno em condições específicas previamente estabelecidas e a solução numérica resolve o problema de forma geral para diversos cenários. No caso da modelagem sísmica, as condições estabelecidas se aplicam ao modelo de velocidade, resolvendo a equação em um modelo homogêneo ou com camadas plano paralelas sem variação lateral de velocidade.  
 
 \subsection*{Equação da onda para meios acústicos}
 
-equação completa
+A equação base para a simulação sísmica utilizando a simplificação para meios acústicos pode ser formulada da seguinte maneira
+\begin{equation}
+	\nabla^2u(\mathbf{x}, t) - \dfrac{1}{v^2(\mathbf{x})}\dfrac{\partial^2u(\mathbf{x}, t)}{\partial t^2} = f(t),	
+	\label{wave_equation}
+\end{equation}
+\noindent onde $u(\mathbf{x},t)$ é o campo de pressão hidrostática, $t$ é o tempo de propagação e $\mathbf{x} = (x,y,z)$ são as variáveis do sistema de coordenadas para o caso 3D. $v(\mathbf{x})$ é o modelo de velocidade, $f(t)$ é uma função que determina o formato do pulso propagado e $\nabla^2 = \partial_x + \partial_y + \partial_z$ é o operador laplaciano. \citeonline{igel2017computational} mostra algumas formas de resolver a equação da onda numericamente de forma prática e aplicada. O método das diferenças finitas é um dos métodos mais utilizados em simulações sísmicas. O princípio do método é estimar o valor da derivada numericamente utilizando a série de Taylor, definida detalhadamente no trabalho de \citeonline{de2005funccoes}. Somente derivadas de segunda ordem são necessárias para resolver a equação \ref{wave_equation} e a aproximação da derivada pode ser definida a partir da seguinte expressão
+\begin{equation}
+	\dfrac{\partial^2 f(x)}{\partial x^2} \approx \dfrac{f[i - dh] - 2f[i] + f[i + dh]}{dh^2},
+	\label{derivada_2}
+\end{equation}    
+\noindent onde $f(x)$ é uma função contínua arbitrária definida no eixo $x \in \mathbb{R}$ e $f[i]$ é uma função discreta definida na mesma reta com intervalos regulares $dh$. A equação da onda para meios acústicos pode ser escrita em seu formato discreto  substituindo a equação \ref{derivada_2} na equação \ref{wave_equation}, para cada eixo $x,y,z,t$ respectivamente. O método das diferenças finitas possui certas limitações como por exemplo a dispersão e instabilidade numérica \cite{aki1980quantitative}. Seguindo os trabalhos de \citeonline{mufti1990large, bulcao2004modelagem} e \citeonline{robertsson2012numerical} as condições para contornar problemas numéricos na modelagem sísmica para meios acústicos seguem na forma a seguir
+\begin{equation}
+	\begin{cases}
+		dh \le v_{\text{min}} \,/\, (\alpha \cdot f_{\text{max}}) \\
+		dt \le dh \,/\, (\beta \cdot v_{\text{max}})
+	\end{cases}
+\end{equation}   
+\noindent onde $dh$ e $dt$ são os parâmetros de discretização espacial e temporal respectivamente, $v_{\text{min}}$ e $v_{\text{max}}$ são as velocidades da onda P mínima e máxima no modelo, $f_{\text{max}}$ é a frequência máxima da fonte sísmica aplicada, e $\alpha$ e $\beta$ são as quantidades de amostras para representar um comprimento de onda no espaço e no tempo respectivamente. Os valores de $\alpha$ e $\beta$ variam de acordo com a ordem do operador de diferenças finitas \cite{bulcao2004modelagem}.    
 
-resolução por diferenças finitas
+A fonte sísmica pode assumir diferentes formas dependendo de seu formato ou equacionamento. Na modelagem sísmica, a fonte é aplicada como um pulso definido no tempo discreto, onde a cada passo de tempo uma amostra do sinal é injetada, em uma posição no espaço, na resolução da equação da onda. A segunda derivada da equação gaussiana \cite{ricker1953form} pode ser usada para gerar o pulso sísmico, sendo definida da seguinte maneira
+\begin{equation}
+	\begin{cases}
+		f_p = f_{\text{max}} / (3\sqrt{\pi}) \\
+		g(t) = (1 - 2 \pi (\pi f_p t)^2) \exp(-\pi (\pi f_p t)^2)
+	\end{cases}
+\end{equation}
+\noindent sendo $f_p$ a frequência de pico, $g(t)$ a fonte sísmica e $t$ o eixo do tempo. 
 
-\cite{igel2017computational}
+Ao contrário de dados sísmicos reais, onde o planeta absorve por completo a energia da onda, em simulação computacional, para os casos onde a equação da onda não contempla fenômenos dissipativos, existem técnicas para prevenir reflexões indesejadas causadas pelas bordas do modelo finito empregado. A condição de bordas absortivas de \citeonline{cerjan1985nonreflecting} é uma abordagem clássica para resolver o problema de bordas na modelagem sísmica, porém outras formulações mais elaboradas podem ser utilizadas, uma possibilidade é aplicar a formulação descrita no trabalho de \citeonline{chern2019reflectionless}. A condição de borda utilizada neste trabalho é regida pela equação a seguir
+\begin{equation}
+	w(\mathbf{x}) = exp(- p(n_b - \mathbf{x})^2),	
+\end{equation}      
+\noindent onde $w(\mathbf{x})$ é a função amortecimento definida somente nos pontos da borda $\mathbf{x}$, $p$ é um fator de atenuação e $n_b$ é a quantidade de amostras na borda. \citeonline{bording1921finite} compara experimentos para determinar valores otimizados para $n_b$ e $p$, em contrapartida \citeonline{gao2017comparison} mostram que a técnica esponjosa absortiva foi superada pelas novas variantes utilizando modificações da equação da onda. 
+
+Utilizando a equação da onda em simulações sísmicas, alguns tipos de onda são registradas, que para o caso acústico escalar somente a onda P, porém existem as frentes de onda refletidas e refratadas. Nas próximas seções, somente as frentes de onda transmitidas e refratadas são exploradas pois esse tipo de onda é a ferramenta principal deste trabalho. As ondas refratadas acontecem quando o afastamento entre a fonte e o receptor são suficientemente grandes, dependendo da configuração de camadas geológicas em subsuperfície. Essas ondas refratadas comumente são chamadas de primeiras chegadas, pois se propagam em camadas de maior velocidade e assim são registradas em um tempo menor que as demais frentes de onda.          
+
+\subsection*{Equação \textit{eikonal}}
+
+A equação eikonal pode ser definida como uma aproximação de altas frequências para a equação da onda em meios acústicos. Essa definição pode ser expandida para outras simplificações de meio, como por exemplo o meio elástico isotrópico \cite{cerveny2003seismic}. \citeonline{rawlinson2008seismic} mostram as etapas de simplificação partindo da equação \ref{wave_equation}, assumindo uma solução periódica envolvendo tempo e frequência angular, aplicando essa solução na equação da onda, simplificando os termos e aplicando o limite da frequência angular tendendo ao infinito. Assim, a equação eikonal em três dimensões segue no formato 
+\begin{equation}
+	\left[\dfrac{\partial T(\mathbf{x})}{\partial x}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial y}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial z}\right]^2 = \dfrac{1}{v^2(\mathbf{x})} 	
+\end{equation} 
+\noindent sendo $T(\mathbf{x})$ a função tempo de trânsito avaliada na posição $\mathbf{x} = (x,y,z)$ e $s = 1/v$ pode ser chamado de vagarosidade, o inverso da velocidade. 
 
 
 
@@ -41,19 +67,16 @@ livro do kearey \cite{kearey2002introduction}
 
 
 
+\begin{equation}
+	t_n = \dfrac{x}{v_n} + \displaystyle\sum_{i=1}^{n-1} 2z_i cos(\theta_{in})
+\end{equation}
 
-
-
-\subsection*{Equação \textit{eikonal}}
-
-partir da equação da onda em meios acústicos
-
-\cite{cerveny2003seismic}
-\cite{rawlinson2008seismic}
-
-eikonal e transporte
-
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 11cm, height = 7cm]{Imgs/RevisaoBibliografica/refracted_analytic.png}
+	\caption{}
+	\label{fig:refracted_analytic}
+\end{figure}
 
 
 
