@@ -27,7 +27,7 @@ A equação base para a simulação sísmica utilizando a simplificação para m
 \begin{equation}
 	\begin{cases}
 		dh \le v_{\text{min}} \,/\, (\alpha \cdot f_{\text{max}}) \\
-		dt \le dh \,/\, (\beta \cdot v_{\text{max}})
+		dt \le dh \,/\, (\beta \cdot v_{\text{max}}),
 	\end{cases}
 \end{equation}   
 \noindent onde $dh$ e $dt$ são os parâmetros de discretização espacial e temporal respectivamente, $v_{\text{min}}$ e $v_{\text{max}}$ são as velocidades da onda P mínima e máxima no modelo, $f_{\text{max}}$ é a frequência máxima da fonte sísmica aplicada, e $\alpha$ e $\beta$ são as quantidades de amostras para representar um comprimento de onda no espaço e no tempo respectivamente. Os valores de $\alpha$ e $\beta$ variam de acordo com a ordem do operador de diferenças finitas \cite{bulcao2004modelagem}.    
@@ -36,7 +36,7 @@ A fonte sísmica pode assumir diferentes formas dependendo de seu formato ou equ
 \begin{equation}
 	\begin{cases}
 		f_p = f_{\text{max}} / (3\sqrt{\pi}) \\
-		g(t) = (1 - 2 \pi (\pi f_p t)^2) \exp(-\pi (\pi f_p t)^2)
+		g(t) = (1 - 2 \pi (\pi f_p t)^2) \exp(-\pi (\pi f_p t)^2),
 	\end{cases}
 \end{equation}
 \noindent sendo $f_p$ a frequência de pico, $g(t)$ a fonte sísmica e $t$ o eixo do tempo. 
@@ -53,41 +53,52 @@ Utilizando a equação da onda em simulações sísmicas, alguns tipos de onda s
 
 A equação eikonal pode ser definida como uma aproximação de altas frequências para a equação da onda em meios acústicos. Essa definição pode ser expandida para outras simplificações de meio, como por exemplo o meio elástico isotrópico \cite{cerveny2003seismic}. \citeonline{rawlinson2008seismic} mostram as etapas de simplificação partindo da equação \ref{wave_equation}, assumindo uma solução periódica envolvendo tempo e frequência angular, aplicando essa solução na equação da onda, simplificando os termos e aplicando o limite da frequência angular tendendo ao infinito. Assim, a equação eikonal em três dimensões segue no formato 
 \begin{equation}
-	\left[\dfrac{\partial T(\mathbf{x})}{\partial x}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial y}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial z}\right]^2 = \dfrac{1}{v^2(\mathbf{x})} 	
+	\left[\dfrac{\partial T(\mathbf{x})}{\partial x}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial y}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial z}\right]^2 = \dfrac{1}{v^2(\mathbf{x})}, 	
 \end{equation} 
-\noindent sendo $T(\mathbf{x})$ a função tempo de trânsito avaliada na posição $\mathbf{x} = (x,y,z)$ e $s = 1/v$ pode ser chamado de vagarosidade, o inverso da velocidade. 
-
-
-
-
-
+\noindent sendo $T(\mathbf{x})$ a função tempo de trânsito avaliada na posição $\mathbf{x} = (x,y,z)$ e $s = 1/v$ pode ser chamado de vagarosidade, o inverso da velocidade. A principal aplicação da equação eikonal utilizando o método sísmico parte da modelagem sísmica, com o trabalho pioneiro de \citeonline{vidale1988finite} onde os tempo de trânsito das primeiras chegadas são calculados. Outras aplicações são os métodos de estimativa da velocidade, como a tomografia de primeira chegada \cite{zhang1998nonlinear, sei1994gradient, tromp2005seismic, taillandier2009first},  e as técnicas de imageamento sísmico, como a migração em profundidade   \cite{gray1994kirchhoff, zhang2006refraction}.  
+ 
 \subsection*{Equação analítica para ondas refratadas}
 
-livro do kearey \cite{kearey2002introduction}
-
-
-
+Apesar de existir em parametrizações variadas do modelo de velocidade, as formulações para o cálculo das primeiras chegadas possuem certas limitações \cite{kearey2002introduction}. Somente uma variação será explorada, onde o modelo de velocidades deve ser plano paralelo com camadas horizontais sem variação de velocidade lateral e a fonte e os receptores devem estar na mesma profundidade. A equação analítica para este caso pode ser escrita de forma generalizada no formato a seguir  
 \begin{equation}
-	t_n = \dfrac{x}{v_n} + \displaystyle\sum_{i=1}^{n-1} 2z_i cos(\theta_{in})
+	\begin{cases}
+		t_n = \dfrac{x}{v_n} + \displaystyle\sum_{i=1}^{n-1} \dfrac{2z_i cos(\theta_{in})}{v_i}\\
+		\theta_{in} = \arcsin(v_i / v_n),
+	\end{cases}
+	\label{analytic_refractions}
 \end{equation}
+\noindent onde $t_n$ e $v_n$ é o tempo e a velocidade da $n$-ésima camada, $x$ é a distância entre a fonte e o receptor, $z_i$ é a espessura da $i$-ésima camada e $\theta_{in}$ é o ângulo crítico da refração. 
+
+As componentes da equação \ref{analytic_refractions}, ilustradas para uma trajetória entre fonte e receptor, são apresentadas na figura \ref{fig:refracted_analytic}. Na prática, um arranjo de receptores para uma fonte, as velocidades e as espessuras das camadas são consideradas. Então para cada interface refratora, as camadas anteriores são utilizadas, que para o caso de uma interface a equação \ref{analytic_refractions} pode ser definida da seguinte forma 
+\begin{equation}
+	\begin{cases}
+		t = \dfrac{x}{v_2} + \dfrac{2z_1cos(\theta_{12})}{v_1}\\
+		\theta_{12} = \arcsin(v_1 / v_2),
+	\end{cases}
+	\label{analytic_one_layer_case}
+\end{equation}   
+\noindent e para duas interfaces, a equação \ref{analytic_refractions} se torna
+\begin{equation}
+	\begin{cases}
+		t = \dfrac{x}{v_3} + \dfrac{2z_1cos(\theta_{13})}{v_1} + \dfrac{2z_2cos(\theta_{23})}{v_2}\\
+		\theta_{13} = \arcsin(v_1 / v_3) \\ 
+		\theta_{23} = \arcsin(v_2 / v_3), 
+	\end{cases}
+	\label{analytic_two_layer_case}
+\end{equation}   
+\noindent enquanto a onda direta recebe o tempo da cinemática clássica $t = x / v_1$. Com as equações abordadas acima, é possível gerar um sismograma sintético somente com tempos analíticos da primeira chegada. Para isso é necessário coletar os tempos mínimos gerados por cada interface refratora inclusive a onda direta. Essa abordagem analítica desenvolve o papel, neste trabalho, de mensurar os erros referentes aos métodos numéricos estudados.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width = 11cm, height = 7cm]{Imgs/RevisaoBibliografica/refracted_analytic.png}
-	\caption{}
+	\includegraphics[width = 14cm, height = 8cm]{Imgs/RevisaoBibliografica/refracted_analytic.png}
+	\caption{Esquema de modelagem analítica dos tempos da onda refratada. S e R são as posições da fonte e do receptor respectivamente. V e Z são as velocidades e as espessuras das camadas. $\theta$ é o angulo crítico das refrações e $i$ e $n$ se relacionam com a equação \ref{analytic_refractions}. Esquema geral com limitações entre posição de fonte e receptor, onde precisam estar na mesma profundidade, e velocidades, onde devem ser constantes lateralmente contendo camadas planas e horizontais.}
 	\label{fig:refracted_analytic}
 \end{figure}
 
-
-
 \subsection*{Método clássico}
 
-\cite{vidale1988finite}
-\cite{podvin1991finite}
-\cite{afnimar2000finite}
-\cite{tryggvason2006travel}
+O método base utilizado para mensurar os avanços tanto em precisão quanto em eficiência computacional dos métodos numéricos que resolvem a equação eikonal foi a formulação de \citeonline{podvin1991finite}. Grandes contribuições foram publicadas em relação a localização não linear de epicentro e hipocentro de terremotos utilizando a formulação clássica, originadas com o trabalho de  \citeonline{wittlinger1993earthquake}, além das contribuições em tomografia e migração já mencionadas. A formulação de \citeonline{podvin1991finite} apresenta algumas limitações como instabilidade em camadas com alto angulo de mergulho \cite{afnimar2000finite} e discrepância no cálculo dos tempos de trânsito utilizando a técnica da reciprocidade, onde a fonte assume a posição dos receptores e vice-versa \cite{tryggvason2006travel}. \citeonline{lomax2009earthquake} hospeda um repositório no \textit{GitHub}, de livre acesso, contendo os códigos originais para o cálculo da primeira chegada.  
 
-desenvolvimento com o algoritmo time3d
 
 
 
