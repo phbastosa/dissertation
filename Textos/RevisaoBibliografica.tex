@@ -99,26 +99,91 @@ As componentes da equação \ref{analytic_refractions}, ilustradas para uma traj
 
 O método base utilizado para mensurar os avanços tanto em precisão quanto em eficiência computacional dos métodos numéricos que resolvem a equação eikonal foi a formulação de \citeonline{podvin1991finite}. Grandes contribuições foram publicadas em relação a localização não linear de epicentro e hipocentro de terremotos utilizando a formulação clássica, originadas com o trabalho de  \citeonline{wittlinger1993earthquake}, além das contribuições em tomografia e migração já mencionadas. A formulação de \citeonline{podvin1991finite} apresenta algumas limitações como instabilidade em camadas com alto angulo de mergulho \cite{afnimar2000finite} e discrepância no cálculo dos tempos de trânsito utilizando a técnica da reciprocidade, onde a fonte assume a posição dos receptores e vice-versa \cite{tryggvason2006travel}. \citeonline{lomax2009earthquake} hospeda um repositório no \textit{GitHub}, de livre acesso, contendo os códigos originais para o cálculo da primeira chegada.  
 
+A resolução da equação eikonal parte do princípio de Huygens, onde cada ponto pertencente a uma frente de onda pode se comportar como uma fonte que expande outra frente de onda. Então, a solução de \citeonline{podvin1991finite} aplica sistematicamente o princípio de Huygens considerando algumas possibilidades de propagação. Cada frente de onda, como por exemplo: difrações, refrações e onda direta, é calculada de forma independente sendo atualizada no volume de tempos como a opção de menor tempo entre as demais. Especificamente, operadores de diferenças finitas para casos 1D, 2D e 3D são aplicados, e considerando a indexação da Figura \ref{fig:voxel_full}, os principais operadores serão mostrados. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 7cm, height = 6cm]{Imgs/RevisaoBibliografica/voxel_full.png}
+	\caption{Esquema de indexação para o cálculo dos operadores de \citeonline{podvin1991finite}. O ponto vermelho é o alvo da propagação e os demais são seus vizinhos.}
+	\label{fig:voxel_full}
+\end{figure}
+Os operadores 1D levam em consideração somente dois pontos, porém dependendo do ângulo de incidência as propriedades de vagarosidade devem ser escolhidas minuciosamente. O primeiro operador 1D se relaciona com a onda de corpo com propagação direta no sentido $(i,j-1,k) \to (i,j,k)$, seguindo os índices mostrados na Figura \ref{fig:voxel_full}, recebe a formulação
+\begin{equation}
+	T_{i,j,k} = T_{i,j-1,k} + dh\, \mathbf{min}(S_{i,j-1,k},\, S_{i,j-1,k-1},\, S_{i-1,j-1,k},\, S_{i-1,j-1,k-1}),
+	\label{1d_head_wave}
+\end{equation}   
+\noindent onde $T$ e $S$ são os volumes de tempo e de vagarosidade respectivamente e $dh$ é o espaçamento espacial do modelo. Existem mais 5 direções para se aplicar o operador da equação \ref{1d_head_wave}, totalizando 6 operadores no total. Para o caso 1D em ondas difratadas, que ocorrem nas diagonais dos cubos, os operadores nos sentidos $(i-1,j-1,k-1) \to (i,j,k)$, $(i-1,j,k-1) \to (i,j,k)$ e $(i-1,j-1,k) \to (i,j,k)$, são respectivamente do seguinte formato
+\begin{equation}
+	\begin{cases}
+		T_{i,j,k} = T_{i-1,j-1,k-1} + \sqrt{3}\,dh\,S_{i-1,j-1,k-1} \\
+		T_{i,j,k} = T_{i-1,j,k-1} + \sqrt{2}\,dh\,\mathbf{min}(S_{i-1,j-1,k-1},\,S_{i-1,j,k-1}) \\
+		T_{i,j,k} = T_{i-1,j-1,k} + \sqrt{2}\,dh\,\mathbf{min}(S_{i-1,j-1,k-1},\,S_{i-1,j-1,k}).
+	\end{cases}
+	\label{1D_diffractions}
+\end{equation}
+\noindent Como algumas frentes de onda se propagam entre dois cubos, a vagarosidade mínima é estrategicamente calculada para assegurar que a frente de onda se propagará pelo meio de maior velocidade, respeitando assim o princípio de Fermat. Operadores 1D de ondas difratadas são aplicados em 20 direções ao todo. Os operadores 2D seguem uma condição de iluminação sendo formulados, utilizando os pontos $(i-1,j,k-1)$ e $(i-1,j,k)$, a seguir
+\begin{equation}
+	\begin{cases}
+		(1) \,\, S_{ref} = \mathbf{min}(S_{i-1,j-1,k-1},\, S_{i-1,j,k-1})  \\
+		(2) \,\, 0 \le (T_{i-1,j,k} - T_{i-1,j,k-1}) \le \sqrt{2}\,dh\,S_{ref} \\
+		(3) \,\, T_{i,j,k} = T_{i-1,j,k} + \sqrt{(dh\,S_{ref})^2 - (T_{i-1,j,k} - T_{i-1,j,k-1})^2},	
+	\end{cases}
+	\label{2D_operators}
+\end{equation}
+\noindent sendo $(1)$ a aplicação do princípio de Fermat, $(2)$ a condição de iluminação, $(3)$ o cálculo do tempo de trânsito e $S_{ref}$ é a vagarosidade de referência em cada operador. Para esse caso, vinte e quatro operadores são aplicados nas redondezas do ponto alvo $T_{i,j,k}$. Os operadores 3D são altamente condicionais, utilizam três pontos vizinhos e para cada cubo do modelo, três operadores são aplicados. Para melhor entendimento, a Figura \ref{fig:voxel3d} mostra as direções para um cubo, dos pontos utilizados para o cálculo dos operadores 3D seguindo a simbologia do trabalho de \citeonline{podvin1991finite}. 
 
+\begin{figure}[H]
+	\centering
+	
+	\subfloat[]{\includegraphics[width=4.5cm,height=4cm]{Imgs/RevisaoBibliografica/3D_xz.png}}
+	\subfloat[]{\includegraphics[width=4.5cm,height=4cm]{Imgs/RevisaoBibliografica/3D_yz.png}}
+	\subfloat[]{\includegraphics[width=4.5cm,height=4cm]{Imgs/RevisaoBibliografica/3D_xy.png}}
+		
+	\caption{Esquema de pontos utilizados na aplicação dos operadores 3D de \citeonline{podvin1991finite}. (a) plano xz, (b) plano yz e (c) plano xy. Pontos em verde são a vizinhança selecionada, o ponto em contorno azul é a posição da vagarosidade de referência, e o ponto em vermelho é o alvo da propagação.}
+	\label{fig:voxel3d}
+\end{figure}
+\noindent Então, os operadores 3D seguem o mesmo padrão para quaisquer pontos (P,Q,M,N) selecionados corretamente. As formulações completas para uma composição de pontos mostrados na Figura \ref{fig:voxel3d}, podem ser escritas da maneira a seguir
+\begin{multline}
+	MNP \to T_{i,j,k}: \\ 
+	M \le N \,\cap\, M \le P \\
+	2(P-M)^2 + (N-M)^2 \le (dh\,S_{ref})^2 \\
+	2(N-M)^2 + (P-M)^2 \le (dh\,S_{ref})^2 \\
+	(N-M)^2 + (P-M)^2 + (N-M)(P-M) \ge 0.5(dh\,S_{ref})^2 \\
+	T_{i,j,k} = N + P - M \sqrt{(dh\,S_{ref})^2 - (N-M)^2 - (P-M)^2}, \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,
+	\label{MNP-R}
+\end{multline}
+\begin{multline}
+	QNP \to T_{i,j,k}: \\	
+	N \le Q \,\cap\, P \le Q \\
+	(Q-N)^2 + (Q-P)^2 + (Q-N)(Q-P) \le 0.5(dh\,S_{ref})^2 \\
+	T_{i,j,k} = Q + \sqrt{(dh\,S_{ref})^2 - (Q-N)^2 - (Q-P)^2}, \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,   
+	\label{QNP-R}
+\end{multline}
+\begin{multline}
+	NMQ \to T_{i,j,k}: \\	
+	N \ge M \,\cap\, N-M \le Q-N \\
+	2(Q-N)^2 + (N-M)^2 \le (dh\,S_{ref})^2 \\
+	T_{i,j,k} = Q + \sqrt{(dh\,S_{ref})^2 - (Q-N)^2 - (N-M)^2}, \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,
+	\label{NMQ-R}
+\end{multline}
+\begin{multline}
+	PMQ \to T_{i,j,k}: \\	
+	P \ge M \,\cap\, P-M \le Q-P \\
+	2(Q-P)^2 + (P-M)^2 \le (dh\,S_{ref})^2 \\
+	T_{i,j,k} = Q + \sqrt{(dh\,S_{ref})^2 - (Q-P)^2 - (P-M)^2}. \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,
+	\label{PMQ-R}
+\end{multline}
 
+A resolução da equação eikonal é iterativa e a cada iteração é necessário que uma frente de onda se expanda passando pelos pontos onde o tempo de trânsito é desconhecido. Inicialmente, o volume dos tempos de trânsito recebe o valor zero na fonte e um valor tendendo ao infinito nas demais posições. Os pontos vizinhos à posição da fonte são inicializados utilizando a equação da cinemática clássica $t = x / v$, considerando que cada bloco do modelo possui um valor de velocidade constante. Para posições de fonte irregulares, ou seja, posições que não pertencem a nenhum ponto da malha, o tempo da fonte é inicializado de acordo com a distância entre a fonte e o ponto da malha mais próximo. Assim, a solução iterativa de \citeonline{podvin1991finite} pode propagar o tempo inicial para as demais posições automaticamente. Após a inicialização, um volume lógico é inicializado com valores de verdadeiro e falso, sendo verdadeiro as posições que convergiram para um tempo de trânsito aceitável e falso, para posições que ainda não convergiram. O número de iterações depende da distância, em pontos de malha, entre a posição da fonte e as extremidades do modelo de velocidade, sendo a maior distância em pontos de malha que houver. Durante as iterações, todos os pontos do modelo são acessados, porém as equações são calculadas somente onde o volume lógico indica necessidade de atualização. A partir do momento que o tempo de trânsito de um certo ponto atinge a confiabilidade dada por uma tolerância, novos pontos são acionados como verdadeiros e assim, os operadores computam novos tempos em regiões ainda não exploradas até completar toda a extensão do modelo de velocidades. Para registrar os tempos de trânsito em cada posição de receptor, basta coletar o tempo do volume de tempos de trânsito e para posições irregulares, a interpolação tri-linear foi utilizada para resolver o problema.  
 
-
-
-
-
+A solução de \citeonline{podvin1991finite} é altamente paralelizável. Um processo que pode ser paralelizado é aquele que possui problemas pequenos que podem ser resolvidos de forma independente e assim simultaneamente. O algoritmo desenvolvido pelo autor deste trabalho, para resolver a equação eikonal utilizando os operadores de \citeonline{podvin1991finite}, pode ser encontrado na plataforma de compartilhamento de código aberto GitHub.  
 
 \subsection*{\textit{Fast Iterative Method}}
 
-\cite{jeong2008fast}
-\cite{sethian1999fast}
+Original de \citeonline{jeong2008fast}, o \textit{Fast Iterative Method} (FIM) é uma metodologia que utiliza uma frente de onda variável que se adapta ao modelo de velocidades, tornando assim uma frente de onda mais realística. FIM é uma técnica de resolução baseada nas formulações de frente de onda expansivas como o \textit{Fast Marching Method} (FMM). O FMM, formulado por \citeonline{sethian1999fast}, possui grandes aplicabilidades em geociências como os trabalhos de \citeonline{sethian19993, rawlinson2004multiple, lelievre2011computing, jiang2021fast} e até a presente data deste trabalho ainda é explorado com diferentes implementações \cite{white2020pykonal, chenpyekfmm2023}. Por outro lado o FIM, ainda pouco estudado na área de geociências, possui vantagens computacionais em relação ao FMM, onde em cada iteração se resolve uma ordenação com a estrutura de dados \textit{heap} para atualizar a frente de onda irregular (\textit{heap sort}). O FIM não depende de estruturas de dados e cada ponto pertencente à frente de onda irregular é resolvido simultaneamente. A estratégia do FMM pode ser eficiente em computação sequencial, porém torna-se ineficiente utilizando paralelismo de larga escala até o momento da publicação de \citeonline{jeong2008fast}. Alguns anos depois, \citeonline{yang2017highly} resolvem a aplicabilidade do FMM, porém essa solução não foi considerada neste estudo. A ênfase neste trabalho foi a experimentação da formulação de \citeonline{jeong2008fast}, ainda pouco explorada. 
 
-\cite{fu2011fast, fu2013fast}
+Outras contribuições como a implementação do FIM em diferentes domínios \cite{fu2011fast, fu2013fast} e melhoria da eficiência computacional \cite{dang2014fast, hong2016multi, hong2022mg} foram desenvolvidas. A descoberta da imprecisão dos tempos de trânsito utilizando a formulação de \citeonline{jeong2008fast} foi primordial para a aplicação do método em estudos de modelagem e imageamento sísmico. \citeonline{cai2023improved} melhorou a precisão do FIM aumentando a quantidade de pontos vizinhos para o cálculo dos tempos de trânsito sem diminuição significativa da eficiência computacional, porém essa contribuição não foi considerada neste estudo.  
+       
 
-\cite{dang2014fast, hong2016multi, hong2022mg}
-
-\cite{cai2023improved}
-
-desenvolvimento com a implementação 
 
 
 
