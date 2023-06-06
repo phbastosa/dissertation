@@ -54,6 +54,7 @@ Utilizando a equação da onda em simulações sísmicas, alguns tipos de onda s
 A equação eikonal pode ser definida como uma aproximação de altas frequências para a equação da onda em meios acústicos. Essa definição pode ser expandida para outras simplificações de meio, como por exemplo o meio elástico isotrópico \cite{cerveny2003seismic}. \citeonline{rawlinson2008seismic} mostram as etapas de simplificação partindo da equação \ref{wave_equation}, assumindo uma solução periódica envolvendo tempo e frequência angular, aplicando essa solução na equação da onda, simplificando os termos e aplicando o limite da frequência angular tendendo ao infinito. Assim, a equação eikonal em três dimensões segue no formato 
 \begin{equation}
 	\left[\dfrac{\partial T(\mathbf{x})}{\partial x}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial y}\right]^2 + \left[\dfrac{\partial T(\mathbf{x})}{\partial z}\right]^2 = \dfrac{1}{v^2(\mathbf{x})}, 	
+	\label{eikonal_full}
 \end{equation} 
 \noindent sendo $T(\mathbf{x})$ a função tempo de trânsito avaliada na posição $\mathbf{x} = (x,y,z)$ e $s = 1/v$ pode ser chamado de vagarosidade, o inverso da velocidade. A principal aplicação da equação eikonal utilizando o método sísmico parte da modelagem sísmica, com o trabalho pioneiro de \citeonline{vidale1988finite} onde os tempo de trânsito das primeiras chegadas são calculados. Outras aplicações são os métodos de estimativa da velocidade, como a tomografia de primeira chegada \cite{zhang1998nonlinear, sei1994gradient, tromp2005seismic, taillandier2009first},  e as técnicas de imageamento sísmico, como a migração em profundidade   \cite{gray1994kirchhoff, zhang2006refraction}.  
  
@@ -97,7 +98,7 @@ As componentes da equação \ref{analytic_refractions}, ilustradas para uma traj
 
 \subsection*{Método clássico}
 
-O método base utilizado para mensurar os avanços tanto em precisão quanto em eficiência computacional dos métodos numéricos que resolvem a equação eikonal foi a formulação de \citeonline{podvin1991finite}. Grandes contribuições foram publicadas em relação a localização não linear de epicentro e hipocentro de terremotos utilizando a formulação clássica, originadas com o trabalho de  \citeonline{wittlinger1993earthquake}, além das contribuições em tomografia e migração já mencionadas. A formulação de \citeonline{podvin1991finite} apresenta algumas limitações como instabilidade em camadas com alto angulo de mergulho \cite{afnimar2000finite} e discrepância no cálculo dos tempos de trânsito utilizando a técnica da reciprocidade, onde a fonte assume a posição dos receptores e vice-versa \cite{tryggvason2006travel}. \citeonline{lomax2009earthquake} hospeda um repositório no \textit{GitHub}, de livre acesso, contendo os códigos originais para o cálculo da primeira chegada.  
+O método base utilizado para mensurar os avanços tanto em precisão quanto em eficiência computacional dos métodos numéricos que resolvem a equação eikonal foi a formulação de \citeonline{podvin1991finite}. Grandes contribuições foram publicadas em relação a localização não linear de epicentro e hipocentro de terremotos utilizando a formulação clássica, originadas com o trabalho de  \citeonline{wittlinger1993earthquake}, além das contribuições em tomografia e migração já mencionadas. A formulação de \citeonline{podvin1991finite} apresenta algumas limitações como instabilidade em camadas com alto ângulo de mergulho \cite{afnimar2000finite} e discrepância no cálculo dos tempos de trânsito utilizando a técnica da reciprocidade, onde a fonte assume a posição dos receptores e vice-versa \cite{tryggvason2006travel}. \citeonline{lomax2009earthquake} hospeda um repositório no \textit{GitHub}, de livre acesso, contendo os códigos originais para o cálculo da primeira chegada.  
 
 A resolução da equação eikonal parte do princípio de Huygens, onde cada ponto pertencente a uma frente de onda pode se comportar como uma fonte que expande outra frente de onda. Então, a solução de \citeonline{podvin1991finite} aplica sistematicamente o princípio de Huygens considerando algumas possibilidades de propagação. Cada frente de onda, como por exemplo: difrações, refrações e onda direta, é calculada de forma independente sendo atualizada no volume de tempos como a opção de menor tempo entre as demais. Especificamente, operadores de diferenças finitas para casos 1D, 2D e 3D são aplicados, e considerando a indexação da Figura \ref{fig:voxel_full}, os principais operadores serão mostrados. 
 \begin{figure}[H]
@@ -181,27 +182,83 @@ A solução de \citeonline{podvin1991finite} é altamente paralelizável. Um pro
 
 Original de \citeonline{jeong2008fast}, o \textit{Fast Iterative Method} (FIM) é uma metodologia que utiliza uma frente de onda variável que se adapta ao modelo de velocidades, tornando assim uma frente de onda mais realística. FIM é uma técnica de resolução baseada nas formulações de frente de onda expansivas como o \textit{Fast Marching Method} (FMM). O FMM, formulado por \citeonline{sethian1999fast}, possui grandes aplicabilidades em geociências como os trabalhos de \citeonline{sethian19993, rawlinson2004multiple, lelievre2011computing, jiang2021fast} e até a presente data deste trabalho ainda é explorado com diferentes implementações \cite{white2020pykonal, chenpyekfmm2023}. Por outro lado o FIM, ainda pouco estudado na área de geociências, possui vantagens computacionais em relação ao FMM, onde em cada iteração se resolve uma ordenação com a estrutura de dados \textit{heap} para atualizar a frente de onda irregular (\textit{heap sort}). O FIM não depende de estruturas de dados e cada ponto pertencente à frente de onda irregular é resolvido simultaneamente. A estratégia do FMM pode ser eficiente em computação sequencial, porém torna-se ineficiente utilizando paralelismo de larga escala até o momento da publicação de \citeonline{jeong2008fast}. Alguns anos depois, \citeonline{yang2017highly} resolvem a aplicabilidade do FMM, porém essa solução não foi considerada neste estudo. A ênfase neste trabalho foi a experimentação da formulação de \citeonline{jeong2008fast}, ainda pouco explorada. 
 
-Outras contribuições como a implementação do FIM em diferentes domínios \cite{fu2011fast, fu2013fast} e melhoria da eficiência computacional \cite{dang2014fast, hong2016multi, hong2022mg} foram desenvolvidas. A descoberta da imprecisão dos tempos de trânsito utilizando a formulação de \citeonline{jeong2008fast} foi primordial para a aplicação do método em estudos de modelagem e imageamento sísmico. \citeonline{cai2023improved} melhorou a precisão do FIM aumentando a quantidade de pontos vizinhos para o cálculo dos tempos de trânsito sem diminuição significativa da eficiência computacional, porém essa contribuição não foi considerada neste estudo.  
-       
+Outras contribuições como a implementação do FIM em diferentes discretização o modelo como malhas triangulares e tetraédricas \cite{fu2011fast, fu2013fast} e melhoria da eficiência computacional \cite{dang2014fast, hong2016multi, hong2022mg} foram desenvolvidas. A discussão em relação à imprecisão dos tempos de trânsito utilizando a formulação de \citeonline{jeong2008fast} foi destacada por \citeonline{cai2023improved}. A modificação considerada foi aumentar a quantidade de pontos vizinhos para o cálculo dos tempos de trânsito sem diminuição significativa da eficiência computacional, porém a melhoria proposta não foi acoplada a este trabalho. 
 
+A ideia principal do FIM é resolver a equação de Eikonal utilizando uma lista de ativos que contempla os pontos da frente de onda, sem manter estruturas de dados caras, como um \textit{heap} por exemplo. O método de \cite{jeong2008fast} mantém um
+relacionamento mais flexível e atualiza todos os pontos da malha contidos na lista ativa simultaneamente usando computação paralela. Durante cada iteração, expandimos a lista de pontos ativos e a frente de onda expande para incluir todos os pontos que podem ser afetados pelas atualizações atuais.  Um ponto contido na frente de onda pode ser removido da lista ativa quando sua solução estiver atualizada em relação para seus vizinhos (ou seja, convergiu). Somente os pontos contidos na lista de ativos são acessados em cada iteração e esses pontos podem ser atualizados simultaneamente. A inicialização se assemelha com o método de resolução da equação eikonal apresentado na seção anterior \cite{podvin1991finite}, onde a posição da fonte recebe o valor zero e os demais pontos no volume de tempo de trânsito recebe um valor alto.
 
+A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contendo 4x4x4 amostras de malha, versão esta chamada de \textit{block}-FIM. Cada bloco se comporta como um ponto de malha na frente de onda expansiva, e assim a lista se preenche com blocos ativos ao invés de pontos. Nessa estratégia, se utiliza otimizações específicas de computação paralela comentadas no trabalho de \citeonline{jeong2008fast}, onde o algoritmo original \textit{block}-FIM pode ser encontrado no Github, num repositório hospedado pelo próprios autores.
 
+\begin{algorithm}[H]
+	\caption{Equação principal do \textit{Fast Iterative Method}}
+	\footnotesize
+	\SetAlgoLined
+	\Entrada{$T$, $\,S_{i,j,k}$, $\,dh$} 
+	\Saida{$T_{i,j,k}$}
+	\Inicio
+	{	
+		$a = \mathbf{min}(T_{i-1,j,k}, T_{i+1,j,k})$ \\
+		$b = \mathbf{min}(T_{i,j-1,k}, T_{i,j+1,k})$ \\
+		$c = \mathbf{min}(T_{i,j,k-1}, T_{i,j,k+1})$ \\
+		
+		$a,b,c \leftarrow \mathbf{ordene}(a,b,c)\,\, \text{tal que}\,\, a > b > c$ \\
+		\Se{$c < \infty$}
+		{
+			$T_{i,j,k} \leftarrow c + dh\,S_{i,j,k} \\
+			
+			\Se{$T_{i,j,k} > b$}
+			{
+				$T_{aux} = 0.5(b + c + \sqrt{2(dh\,S_{i,j,k})^2 - (b - c)^2})$ \\
+				
+				\Se{$T_{aux} > b$}
+				{
+					$T_{i,j,k} = T_{aux}$ \\	
+				}
+				
+				\Se{$T_{i,j,k} > a$}
+				{
+					$T_{aux} = \left((a + b + c) + \sqrt{2(a(b-a) + b(c-b) + c(a-c))}\right) / 3$ \\	
+					
+					\Se{$T_{aux} > a$}
+					{
+						$T_{i,j,k} = T_{aux}$ \\ 
+					}
+				}	
+			}
+		}
+	}
+\end{algorithm}
 
-
-
+O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é ordenar as diferenças dos tempos de trânsito dos vizinhos diretos do ponto alvo $T_{ijk}$ e aplicar condições de iluminação desenvolvidas empiricamente por \cite{jeong2008fast}. Para registrar os tempos das primeiras chegadas, as posições dos receptores são projetadas no volume de tempo de trânsito e para posições irregulares, fora da malha, a interpolação tri linear é utilizada, assim como na seção anterior.  
 
 \subsection*{\textit{Fast Sweeping Method}}
 
-original fast sweeping method
+Original de \citeonline{zhao2005fast}, o \textit{Fast Sweeping Method} é uma formulação que utiliza os operadores clássicos aplicados desde o trabalho de \citeonline{vidale1988finite}, porém aplica uma ordem específica de atualização. Essa forma pode ser chamada de iterações de Gauss-Seidel, onde o domínio computacional é acessado utilizando diferentes direções. Para o caso 3D, oito direcionamentos são aplicados resolvendo as equações conhecidas e desenvolvidas por \citeonline{vidale1988finite, afnimar2000finite}. As direções específicas a serem percorridas são descritas a seguir
+\begin{center}
+\noindent (1) i = 1:Nx;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (2) i = Nx:1;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = 1:Nz, \newline 
+\noindent (3) i = 1 Nx;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (4) i = 1:Nx;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = Nz:1, \newline
+\noindent (5) i = 1:Nx;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = Nz:1,$\,\,\,\,\,\,\,\,$ (6) i = Nx:1;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = Nz:1, \newline 
+\noindent (7) i = Nx:1;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (8) i = Nx:1;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = Nz:1. $\,\,\,\,\,\,\,\,\,\,\,\,\,$
+\end{center}
+\noindent onde a numeração é a ordem de aplicação para um modelo limitado por (Nx, Ny, Nz) amostras. Com essa ordenação, os operadores de diferenças finitas podem ser derivados somente para uma única direção, variando com indicadores direcionais para a vagarosidade e para os tempos de trânsito vizinhos.
 
-\cite{zhao2005fast}
+A contribuição utilizada neste trabalho se origina de \citeonline{noble2014accurate}, onde novos operadores são aplicados para aprimorar a precisão dos tempos de trânsito. A inovação foi considerar a forma expandida dos operadores de oito pontos de \citeonline{vidale1988finite}, onde a seguinte derivada do tempo $T$ em relação a direção $x$ é considerada    
+\begin{equation}
+	\dfrac{\partial T}{\partial x} \approx \left(\dfrac{T_{i,j,k} - T_i}{4\, dh_x}\right),
+	\label{fsm_8p_derivative}
+\end{equation}
+\noindent onde $T_i$ são os sete pontos na redondeza de $T_{i,j,k}$ para o primeiro quadrante, ou seja
+\begin{equation}
+	T_i = - T_{i-1,j,k} + T_{i,j-1,k} - T_{i-1,j-1,k} + T_{i,j,k-1} - T_{i-1,j,k-1} + T_{i,j-1,k-1} - T_{i-1,j-1,k-1}.
+\end{equation} 
+\noindent Aplicando a equação \ref{fsm_8p_derivative} para as outras direções e substituindo na equação \ref{eikonal_full}, obtém-se
+\begin{equation}
+	\left(\dfrac{T_{i,j,k} - T_i}{4\,dh_x}\right)^2 + \left(\dfrac{T_{i,j,k} - T_j}{4\,dh_y}\right)^2 + \left(\dfrac{T_{i,j,k} - T_k}{4\,dh_z}\right) = S^2_{i,j,k}
+	\label{quadratic}
+\end{equation}
+\noindent onde $dh_x$,$dh_y$ e $dh_z$ são os parâmetros de discretização espaciais para as direções cartesianas. Embora a formulação de \citeonline{noble2014accurate} disponibiliza a opção de heterogeneizar os espaçamentos da malha, o espaçamento fixo foi utilizado neste trabalho. A partir da equação de segundo grau \ref{quadratic}, onde $T_{i,j,k}$ é a incógnita, duas soluções são possíveis, porém somente a de maior é considerada. \citeonline{noble2014accurate} mostram os coeficientes que resolvem o problema \ref{quadratic}, apresenta os operadores em sua forma cartesiana e esférica e hospeda um repositório no GitHub com os códigos desenvolvidos para gerar os resultados publicados. Apesar da utilização de operadores em coordenadas esféricas próximos da fonte para melhorar a precisão dos tempo de trânsito, somente os operadores cartesianos foram aplicados no desenvolvimento deste trabalho.        
 
-\cite{zhao2007parallel}
-
-\cite{detrixhe2013parallel}
-
-\cite{noble2014accurate}
-
+A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao2007parallel}, porém limitações para grande quantidade de processos simultâneos foram encontradas, fazendo com que o tempo de execução se estabelecesse constante com o aumento do poder computacional. \citeonline{detrixhe2013parallel} desenvolvem uma técnica que supera o problema encontrado na formulação de \citeonline{zhao2007parallel}, onde a performance é proporcional ao aumento computacional. Basicamente, a direção de percorrimento no modelo de tempo de trânsito acontece em planos diagonais e cada ponto desses planos podem ser atualizados simultaneamente. O modelo de propriedades de formato cúbico ou paralelepipédico possui oito quinas, então a partir de cada quina, a direção de percorrimento segue de uma quina origem até quina espelhada oposta, percorrendo cada plano diagonal e aplicando os operadores de diferenças finitas. Por consequência da implementação dos operadores 3D de precisão, somente três formas de resolução são aplicadas no núcleo do FSM. O primeiro segue o formado dos operadores 1D de \citeonline{podvin1991finite}, baseados na cinemática clássica (equação \ref{1d_head_wave}), o segundo segue os operadores 2D de quatro pontos desenvolvidos por \citeonline{afnimar2000finite} e o terceiro é a expansão do operador 3D de \citeonline{vidale1988finite}. Com a diminuição dos operadores no núcleo da modelagem, o caso sequencial é viável, porém neste trabalho a forma paralelizada de \citeonline{detrixhe2013parallel} foi aplicada.  
 
 \subsection*{Comparação numérica}
 
