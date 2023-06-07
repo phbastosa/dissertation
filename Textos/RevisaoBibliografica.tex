@@ -187,7 +187,7 @@ Outras contribuições como a implementação do FIM em diferentes discretizaç�
 A ideia principal do FIM é resolver a equação de Eikonal utilizando uma lista de ativos que contempla os pontos da frente de onda, sem manter estruturas de dados caras, como um \textit{heap} por exemplo. O método de \cite{jeong2008fast} mantém um
 relacionamento mais flexível e atualiza todos os pontos da malha contidos na lista ativa simultaneamente usando computação paralela. Durante cada iteração, expandimos a lista de pontos ativos e a frente de onda expande para incluir todos os pontos que podem ser afetados pelas atualizações atuais.  Um ponto contido na frente de onda pode ser removido da lista ativa quando sua solução estiver atualizada em relação para seus vizinhos (ou seja, convergiu). Somente os pontos contidos na lista de ativos são acessados em cada iteração e esses pontos podem ser atualizados simultaneamente. A inicialização se assemelha com o método de resolução da equação eikonal apresentado na seção anterior \cite{podvin1991finite}, onde a posição da fonte recebe o valor zero e os demais pontos no volume de tempo de trânsito recebe um valor alto.
 
-A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contendo 4x4x4 amostras de malha, versão esta chamada de \textit{block}-FIM. Cada bloco se comporta como um ponto de malha na frente de onda expansiva, e assim a lista se preenche com blocos ativos ao invés de pontos. Nessa estratégia, se utiliza otimizações específicas de computação paralela comentadas no trabalho de \citeonline{jeong2008fast}, onde o algoritmo original \textit{block}-FIM pode ser encontrado no Github, num repositório hospedado pelo próprios autores.
+A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contendo 4x4x4 amostras de malha, versão esta chamada de \textit{block}-FIM. Cada bloco se comporta como um ponto de malha na frente de onda expansiva, e assim a lista se preenche com blocos ativos ao invés de pontos. Nessa estratégia, se utiliza otimizações específicas de computação paralela comentadas no trabalho de \citeonline{jeong2008fast}, onde o algoritmo original \textit{block}-FIM pode ser encontrado no Github, num repositório hospedado pelos próprios autores.
 
 \begin{algorithm}[H]
 	\caption{Equação principal do \textit{Fast Iterative Method}}
@@ -214,7 +214,7 @@ A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contend
 				{
 					$T_{i,j,k} = T_{aux}$ \\	
 				}
-				
+				 
 				\Se{$T_{i,j,k} > a$}
 				{
 					$T_{aux} = \left((a + b + c) + \sqrt{2(a(b-a) + b(c-b) + c(a-c))}\right) / 3$ \\	
@@ -233,7 +233,7 @@ O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é o
 
 \subsection*{\textit{Fast Sweeping Method}}
 
-Original de \citeonline{zhao2005fast}, o \textit{Fast Sweeping Method} é uma formulação que utiliza os operadores clássicos aplicados desde o trabalho de \citeonline{vidale1988finite}, porém aplica uma ordem específica de atualização. Essa forma pode ser chamada de iterações de Gauss-Seidel, onde o domínio computacional é acessado utilizando diferentes direções. Para o caso 3D, oito direcionamentos são aplicados resolvendo as equações conhecidas e desenvolvidas por \citeonline{vidale1988finite, afnimar2000finite}. As direções específicas a serem percorridas são descritas a seguir
+Original de \citeonline{zhao2005fast}, o \textit{Fast Sweeping Method} (FSM) é uma formulação que utiliza os operadores clássicos aplicados desde o trabalho de \citeonline{vidale1988finite}, porém aplica uma ordem específica de atualização. Essa forma pode ser chamada de iterações de Gauss-Seidel, onde o domínio computacional é acessado utilizando diferentes direções. Para o caso 3D, oito direcionamentos são aplicados resolvendo as equações conhecidas e desenvolvidas por \citeonline{vidale1988finite, afnimar2000finite}. As direções específicas a serem percorridas são descritas a seguir
 \begin{center}
 \noindent (1) i = 1:Nx;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (2) i = Nx:1;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = 1:Nz, \newline 
 \noindent (3) i = 1 Nx;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (4) i = 1:Nx;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = Nz:1, \newline
@@ -247,53 +247,18 @@ A contribuição utilizada neste trabalho se origina de \citeonline{noble2014acc
 	\dfrac{\partial T}{\partial x} \approx \left(\dfrac{T_{i,j,k} - T_i}{4\, dh_x}\right),
 	\label{fsm_8p_derivative}
 \end{equation}
-\noindent onde $T_i$ são os sete pontos na redondeza de $T_{i,j,k}$ para o primeiro quadrante, ou seja
+\noindent onde $T_i$ são os sete pontos na redondeza de $T_{i,j,k}$ para o primeiro quadrante, ou seja,
 \begin{equation}
 	T_i = - T_{i-1,j,k} + T_{i,j-1,k} - T_{i-1,j-1,k} + T_{i,j,k-1} - T_{i-1,j,k-1} + T_{i,j-1,k-1} - T_{i-1,j-1,k-1}.
 \end{equation} 
 \noindent Aplicando a equação \ref{fsm_8p_derivative} para as outras direções e substituindo na equação \ref{eikonal_full}, obtém-se
 \begin{equation}
-	\left(\dfrac{T_{i,j,k} - T_i}{4\,dh_x}\right)^2 + \left(\dfrac{T_{i,j,k} - T_j}{4\,dh_y}\right)^2 + \left(\dfrac{T_{i,j,k} - T_k}{4\,dh_z}\right) = S^2_{i,j,k}
+	\left(\dfrac{T_{i,j,k} - T_i}{4\,dh_x}\right)^2 + \left(\dfrac{T_{i,j,k} - T_j}{4\,dh_y}\right)^2 + \left(\dfrac{T_{i,j,k} - T_k}{4\,dh_z}\right)^2 = S^2_{i,j,k}
 	\label{quadratic}
 \end{equation}
 \noindent onde $dh_x$,$dh_y$ e $dh_z$ são os parâmetros de discretização espaciais para as direções cartesianas. Embora a formulação de \citeonline{noble2014accurate} disponibiliza a opção de heterogeneizar os espaçamentos da malha, o espaçamento fixo foi utilizado neste trabalho. A partir da equação de segundo grau \ref{quadratic}, onde $T_{i,j,k}$ é a incógnita, duas soluções são possíveis, porém somente a de maior é considerada. \citeonline{noble2014accurate} mostram os coeficientes que resolvem o problema \ref{quadratic}, apresenta os operadores em sua forma cartesiana e esférica e hospeda um repositório no GitHub com os códigos desenvolvidos para gerar os resultados publicados. Apesar da utilização de operadores em coordenadas esféricas próximos da fonte para melhorar a precisão dos tempo de trânsito, somente os operadores cartesianos foram aplicados no desenvolvimento deste trabalho.        
 
 A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao2007parallel}, porém limitações para grande quantidade de processos simultâneos foram encontradas, fazendo com que o tempo de execução se estabelecesse constante com o aumento do poder computacional. \citeonline{detrixhe2013parallel} desenvolvem uma técnica que supera o problema encontrado na formulação de \citeonline{zhao2007parallel}, onde a performance é proporcional ao aumento computacional. Basicamente, a direção de percorrimento no modelo de tempo de trânsito acontece em planos diagonais e cada ponto desses planos podem ser atualizados simultaneamente. O modelo de propriedades de formato cúbico ou paralelepipédico possui oito quinas, então a partir de cada quina, a direção de percorrimento segue de uma quina origem até quina espelhada oposta, percorrendo cada plano diagonal e aplicando os operadores de diferenças finitas. Por consequência da implementação dos operadores 3D de precisão, somente três formas de resolução são aplicadas no núcleo do FSM. O primeiro segue o formado dos operadores 1D de \citeonline{podvin1991finite}, baseados na cinemática clássica (equação \ref{1d_head_wave}), o segundo segue os operadores 2D de quatro pontos desenvolvidos por \citeonline{afnimar2000finite} e o terceiro é a expansão do operador 3D de \citeonline{vidale1988finite}. Com a diminuição dos operadores no núcleo da modelagem, o caso sequencial é viável, porém neste trabalho a forma paralelizada de \citeonline{detrixhe2013parallel} foi aplicada.  
-
-\subsection*{Comparação numérica}
-
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width = 11cm, height = 10cm]{Imgs/RevisaoBibliografica/modelGeometry.png}
-	\caption{Modelo empregado no teste de precisão e performance. (a) Plano XY ilustrando a geometria de aquisição com o arranjo de receptores circulares possuindo somente um tiro central. Isócronas mapeando o comportamento dos tempos de trânsito são mostradas. (b) Perfil de velocidades delimitando a posição da interface. (c) e (d) são as projeções dos cortes em planos XZ e YZ em relação à posição da fonte.}
-	\label{fig:configurationNumericalComparison}
-\end{figure}
-
-
-\begin{figure}[H]
-	\centering
-	\subfloat[]{\includegraphics[width=8cm,height=3.5cm]{Imgs/RevisaoBibliografica/precision_direct.png}\label{fig:rnca}}
-	\subfloat[]{\includegraphics[width=8cm,height=3.5cm]{Imgs/RevisaoBibliografica/reciprocity.png}\label{fig:rncb}}
-	
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_pod_direct.png}\label{fig:rncc}}
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_pod_reciprocity.png}\label{fig:rncd}}
-	
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fim_direct.png}\label{fig:rnce}}
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fim_reciprocity.png}\label{fig:rncf}}
-	
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_direct.png}\label{fig:rncg}}
-	\subfloat[]{\includegraphics[width=8cm,height=1.5cm]{Imgs/RevisaoBibliografica/error_fsm_reciprocity.png}\label{fig:rnch}}
-	
-	\caption{Comparação de precisão entre os métodos numéricos estudados. (a) Mapeamento de todas as chegadas para os métodos numéricos testados para os espaçamentos estudados. (b) Estudo de reciprocidade utilizando o espaçamento de 25 m. (c) Escala do erro para as chegadas em diferentes espaçamentos e (d) tempo direto e recíproco utilizando a formulação de \citeonline{podvin1991finite}. (e) Escala do erro e (f) estudo de reciprocidade para a formulação de \citeonline{jeong2008fast}. (g) Escala do erro e (h) estudo de reciprocidade para a formulação de \citeonline{noble2014accurate}.}
-	\label{fig:resultsNumericalComparison}
-\end{figure}
-
-
-
-
-
-
 
 \section{Inversão tomográfica}
 
@@ -308,6 +273,8 @@ Tipos de tomografia (reflexão, difração, transmissão e refração)
 trabalhos do GISIS
 
 \cite{santos2012tomography}
+\cite{almeida2013tomografia}
+\cite{capucci2013tomografia}
 \cite{bulhoes2021efeitos}
 
 
