@@ -229,7 +229,7 @@ A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contend
 	}
 \end{algorithm}
 
-O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é ordenar as diferenças dos tempos de trânsito dos vizinhos diretos do ponto alvo $T_{ijk}$ e aplicar condições de iluminação desenvolvidas empiricamente por \cite{jeong2008fast}. Para registrar os tempos das primeiras chegadas, as posições dos receptores são projetadas no volume de tempo de trânsito e para posições irregulares, fora da malha, a interpolação tri linear é utilizada, assim como na seção anterior.  
+O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é ordenar as diferenças dos tempos de trânsito dos vizinhos diretos do ponto alvo $T_{ijk}$ e aplicar condições de iluminação desenvolvidas empiricamente por \citeonline{jeong2008fast}. Para registrar os tempos das primeiras chegadas, as posições dos receptores são projetadas no volume de tempo de trânsito e para posições irregulares, fora da malha, a interpolação tri linear é utilizada, assim como mencionado na seção anterior.  
 
 \subsection*{\textit{Fast Sweeping Method}}
 
@@ -240,9 +240,7 @@ Original de \citeonline{zhao2005fast}, o \textit{Fast Sweeping Method} (FSM) é 
 \noindent (5) i = 1:Nx;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = Nz:1,$\,\,\,\,\,\,\,\,$ (6) i = Nx:1;$\,\,\,\,$ j = 1:Ny;$\,\,\,\,$ k = Nz:1, \newline 
 \noindent (7) i = Nx:1;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = 1:Nz,$\,\,\,\,\,\,\,\,$ (8) i = Nx:1;$\,\,\,\,$ j = Ny:1;$\,\,\,\,$ k = Nz:1. $\,\,\,\,\,\,\,\,\,\,\,\,\,$
 \end{center}
-\noindent onde a numeração é a ordem de aplicação para um modelo limitado por (Nx, Ny, Nz) amostras. Com essa ordenação, os operadores de diferenças finitas podem ser derivados somente para uma única direção, variando com indicadores direcionais para a vagarosidade e para os tempos de trânsito vizinhos.
-
-A contribuição utilizada neste trabalho se origina de \citeonline{noble2014accurate}, onde novos operadores são aplicados para aprimorar a precisão dos tempos de trânsito. A inovação foi considerar a forma expandida dos operadores de oito pontos de \citeonline{vidale1988finite}, onde a seguinte derivada do tempo $T$ em relação a direção $x$ é considerada    
+\noindent onde a numeração é a ordem de aplicação para um modelo limitado por (Nx, Ny, Nz) amostras. Com essa ordenação, os operadores de diferenças finitas podem ser derivados somente para uma única direção, variando com indicadores direcionais para a vagarosidade e para os tempos de trânsito vizinhos. A contribuição utilizada neste trabalho se origina de \citeonline{noble2014accurate}, onde novos operadores são aplicados para aprimorar a precisão dos tempos de trânsito. A inovação foi considerar a forma expandida dos operadores de oito pontos de \citeonline{vidale1988finite}, onde a seguinte derivada do tempo $T$ em relação a direção $x$ é considerada    
 \begin{equation}
 	\dfrac{\partial T}{\partial x} \approx \left(\dfrac{T_{i,j,k} - T_i}{4\, dh_x}\right),
 	\label{fsm_8p_derivative}
@@ -256,52 +254,55 @@ A contribuição utilizada neste trabalho se origina de \citeonline{noble2014acc
 	\left(\dfrac{T_{i,j,k} - T_i}{4\,dh_x}\right)^2 + \left(\dfrac{T_{i,j,k} - T_j}{4\,dh_y}\right)^2 + \left(\dfrac{T_{i,j,k} - T_k}{4\,dh_z}\right)^2 = S^2_{i,j,k}
 	\label{quadratic}
 \end{equation}
-\noindent onde $dh_x$,$dh_y$ e $dh_z$ são os parâmetros de discretização espaciais para as direções cartesianas. Embora a formulação de \citeonline{noble2014accurate} disponibiliza a opção de heterogeneizar os espaçamentos da malha, o espaçamento fixo foi utilizado neste trabalho. A partir da equação de segundo grau \ref{quadratic}, onde $T_{i,j,k}$ é a incógnita, duas soluções são possíveis, porém somente a de maior é considerada. \citeonline{noble2014accurate} mostram os coeficientes que resolvem o problema \ref{quadratic}, apresenta os operadores em sua forma cartesiana e esférica e hospeda um repositório no GitHub com os códigos desenvolvidos para gerar os resultados publicados. Apesar da utilização de operadores em coordenadas esféricas próximos da fonte para melhorar a precisão dos tempo de trânsito, somente os operadores cartesianos foram aplicados no desenvolvimento deste trabalho.        
+\noindent onde $dh_x$,$dh_y$ e $dh_z$ são os parâmetros de discretização espaciais para as direções cartesianas. Embora a formulação de \citeonline{noble2014accurate} disponibiliza a opção de heterogeneizar os espaçamentos da malha, porém o espaçamento fixo foi utilizado neste trabalho. A partir da equação de segundo grau \ref{quadratic}, onde $T_{i,j,k}$ é a incógnita, duas soluções são possíveis, entretanto somente a de maior é considerada. \citeonline{noble2014accurate} mostram os coeficientes que resolvem o problema \ref{quadratic}, apresenta os operadores em sua forma cartesiana e esférica. O autor da formulação hospeda um repositório no GitHub com os códigos desenvolvidos para gerar os resultados publicados. Apesar da utilização de operadores em coordenadas esféricas próximos da fonte para melhorar a precisão dos tempo de trânsito, somente os operadores cartesianos foram aplicados no desenvolvimento deste trabalho.        
 
-A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao2007parallel}, porém limitações para grande quantidade de processos simultâneos foram encontradas, fazendo com que o tempo de execução se estabelecesse constante com o aumento do poder computacional. \citeonline{detrixhe2013parallel} desenvolvem uma técnica que supera o problema encontrado na formulação de \citeonline{zhao2007parallel}, onde a performance é proporcional ao aumento computacional. Basicamente, a direção de percorrimento no modelo de tempo de trânsito acontece em planos diagonais e cada ponto desses planos podem ser atualizados simultaneamente. O modelo de propriedades de formato cúbico ou paralelepipédico possui oito quinas, então a partir de cada quina, a direção de percorrimento segue de uma quina origem até quina espelhada oposta, percorrendo cada plano diagonal e aplicando os operadores de diferenças finitas. Por consequência da implementação dos operadores 3D de precisão, somente três formas de resolução são aplicadas no núcleo do FSM. O primeiro segue o formado dos operadores 1D de \citeonline{podvin1991finite}, baseados na cinemática clássica (equação \ref{1d_head_wave}), o segundo segue os operadores 2D de quatro pontos desenvolvidos por \citeonline{afnimar2000finite} e o terceiro é a expansão do operador 3D de \citeonline{vidale1988finite}. Com a diminuição dos operadores no núcleo da modelagem, o caso sequencial é viável, porém neste trabalho a forma paralelizada de \citeonline{detrixhe2013parallel} foi aplicada.  
+A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao2007parallel}, porém limitações para grande quantidade de processos simultâneos foram encontradas, fazendo com que o tempo de execução se estabelecesse constante com o aumento do poder computacional. \citeonline{detrixhe2013parallel} desenvolvem uma técnica que supera o problema encontrado na formulação de \citeonline{zhao2007parallel}, onde a performance é proporcional ao aumento computacional. Basicamente, a direção de percorrimento no modelo de tempo de trânsito acontece em planos diagonais e cada ponto desses planos podem ser atualizados simultaneamente. O modelo de propriedades de formato cúbico ou paralelepipédico possui oito quinas, então a partir de cada quina, a direção de percorrimento segue de uma quina origem até quina espelhada oposta, percorrendo cada plano diagonal e aplicando os operadores de diferenças finitas. Por consequência da implementação dos operadores 3D de precisão, somente três formas de resolução são aplicadas no núcleo do FSM. O primeiro segue o formado dos operadores 1D de \citeonline{podvin1991finite}, baseados na cinemática clássica (equação \ref{1d_head_wave}), o segundo segue os operadores 2D de quatro pontos apresentados por \citeonline{vidale1988finite} e o terceiro é a expansão do operador 3D, também apresentado por \citeonline{vidale1988finite}. Com a diminuição dos operadores no núcleo da modelagem, o caso sequencial é viável, porém neste trabalho a forma paralelizada de \citeonline{detrixhe2013parallel} foi aplicada.  
 
 \section{Inversão tomográfica}
 
-Tipos de tomografia (reflexão, difração, transmissão e refração)
+Nas seções anteriores a modelagem direta foi explorada exemplificando maneiras de como calcular o dado de primeira chegada, ou seja as ondas transmitidas e refratadas. Contudo, na natureza a subsuperfície não é conhecida e para realizar os estudos de investigação, somente os registros sísmicos na superfície terrestre são obtidos. A tomografia sísmica pode ser explorada utilizando diferentes formas de onda, como por exemplo as ondas refletidas, difratadas e refratadas. \citeonline{murphy1999manual} resumem as estratégias da tomografia de reflexão, \citeonline{santos2012tomography} comentam sobre as vantagens da tomografia de difração, \citeonline{almeida2013tomografia} e \citeonline{capucci2013tomografia} desenvolvem experimentos relacionados com a tomografia de refração. Todos esses casos partem do mesmo objetivo: minimizar a diferença entre o dado observado e o dado calculado. De maneira geral o dado artificial pode ser gerado pela equação
+\begin{equation}
+	d^{cal} = \displaystyle\int_{raio} s\,dr = g(m),
+\end{equation}
+\noindent onde $d^{cal}$ é o dado calculado que pode ser estimado a partir da soma infinitesimal de fragmentos do raio $dr$ vezes a vagarosidade $s$. O operador de modelagem direta $g(m)$ tem características não lineares pois os raios propagados dependem do modelo de vagarosidade $m$ \cite{seo2012nonlinear}. Este modelo pode representar diferentes formatos no momento da inversão, desde células ou pontos de malha até equações analíticas como no trabalho de \citeonline{daiana} que parametrizam o modelo com a soma de funções de base radial, sendo que para este trabalho a discretização por pontos de malha foi considerada. 
 
+A função objetivo da tomografia utilizando a norma euclidiana de ordem 2 pode ser formulada da seguinte maneira
+\begin{equation}
+	\chi(m) = \dfrac{1}{2}\left[d^{obs} - g(m)\right]^T\left[d^{obs} - g(m)\right] = \displaystyle\sum_{n = 0}^N(d^{obs}_n - g_n(m))^2, 
+	\label{objectiveFunction}
+\end{equation} 
+\noindent sendo $d^{obs}_n$ o dado observado para cada estação $n$. De forma clássica, a inversão tomográfica pode ser linearizada por um modelo inicial e após a aplicação da expansão em série de Taylor de segunda ordem da equação \ref{objectiveFunction}, pode-se se resolver iterativamente sistemas lineares utilizando a aproximação de Gauss-Newton \cite{tarantola2005inverse, menke2018geophysical, aster2018parameter}. O sistema linear é formado pela aproximação da matriz Hessiana, a segunda derivada, e pelo gradiente da equação \ref{objectiveFunction}. O objetivo é estimar as pequenas variações do modelo de vagarosidade de acordo com a diferença entre o dado observado e calculado de forma iterativa. Em formato de equação, o núcleo da inversão pode ser formulado pela seguinte expressão 
+\begin{equation}
+	G^TG \Delta m_p = G^T\Delta d_p, 		
+	\label{linearSystem}
+\end{equation} 
+\noindent onde $G^TG$ é a aproximação da Hessiana, $\Delta m_p$ é a variação do modelo na iteração $p$, $\Delta d_p$ é a variação do dado na iteração $p$ e $G^T\Delta d$ é a aproximação do gradiente da equação \ref{objectiveFunction}. A matriz $G$ é esparsa contendo as distâncias percorridas para cada raio por elemento de modelo a cada iteração. Como os elementos de modelo são cubos ou paralelepípedos no caso 3D, a matriz $G$ tem o tamanho em linhas: a quantidade de raios projetados na simulação, e em colunas: a quantidade de elementos de modelo. Resolvendo o problema iterativamente, no instante inicial um modelo a priori é considerado e a modelagem por equação eikonal é realizada. Com o volume de tempo de trânsito, o traçado de raios pode ser realizado a partir de que os raios se propaguem perpendicularmente às isócronas de tempo \cite{vidale1988finite}. O traçado de raios via equação eikonal pode ser formulado, em três dimensões, da maneira a seguir
+\begin{equation}
+	\begin{cases}
+		x_i = x_{i-1} + \alpha\,\, \partial_x\, T \,/\, ||\nabla T|| \\ 
+		y_i = y_{i-1} + \alpha\,\, \partial_y\, T \,/\, ||\nabla T|| \\ 
+		z_i = z_{i-1} + \alpha\,\, \partial_z\, T \,/\, ||\nabla T||. 
+	\end{cases}
+	\label{rayTracing}
+\end{equation}
+\noindent Considerando um raio possuindo coordenadas $x$,$y$ e $z$ na posição $i$, a próxima coordenada pode ser estimada a partir da posição anterior somado a um tamanho de passo $\alpha$ definido em metros multiplicado pela derivada do tempo de trânsito normalizada.  
 
-
-
-
-
-
-trabalhos do GISIS
-
-\cite{santos2012tomography}
-\cite{almeida2013tomografia}
-\cite{capucci2013tomografia}
-\cite{bulhoes2021efeitos}
-
-
-
-teoria de inversão
-
-Função objetivo e linearização
 
 Regularização 
 
-\cite{seo2012nonlinear}
+
 \cite{sain2023active}
 
 
 
 least squares conjugate gradient
 
+armazenamento em matriz esparsa
+
 \cite{saad2003iterative}
 
 
 
-
-\subsection*{Tomografia de refração}
-
-Discretização do modelo
-
-Raios ilustrativos
 
 
 
