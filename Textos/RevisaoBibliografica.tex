@@ -30,7 +30,7 @@ A equação base para a simulação sísmica utilizando a simplificação para m
 		dt \le dh \,/\, (\beta \cdot v_{\text{max}}),
 	\end{cases}
 \end{equation}   
-\noindent onde $dh$ e $dt$ são os parâmetros de discretização espacial e temporal respectivamente, $v_{\text{min}}$ e $v_{\text{max}}$ são as velocidades da onda P mínima e máxima no modelo, $f_{\text{max}}$ é a frequência máxima da fonte sísmica aplicada, e $\alpha$ e $\beta$ são as quantidades de amostras para representar um comprimento de onda no espaço e no tempo respectivamente. Os valores de $\alpha$ e $\beta$ variam de acordo com a ordem do operador de diferenças finitas \cite{bulcao2004modelagem}.    
+\noindent onde $dh$ e $dt$ são os parâmetros de discretização espacial e temporal respectivamente, $v_{\text{min}}$ e $v_{\text{max}}$ são as velocidades da onda P mínima e máxima no modelo, $f_{\text{max}}$ é a frequência máxima da fonte sísmica aplicada, e $\alpha$ e $\beta$ são as quantidades de amostras para representar um comprimento de onda no espaço e no tempo respectivamente. Os valores de $\alpha$ e $\beta$ variam de acordo com a ordem do operador de diferenças finitas \cite{moczo2000stability, bulcao2004modelagem}.    
 
 A fonte sísmica pode assumir diferentes formas dependendo de seu formato ou equacionamento. Na modelagem sísmica, a fonte é aplicada como um pulso definido no tempo discreto, onde a cada passo de tempo uma amostra do sinal é injetada, em uma posição no espaço, na resolução da equação da onda. A segunda derivada da equação gaussiana \cite{ricker1953form} pode ser usada para gerar o pulso sísmico, sendo definida da seguinte maneira
 \begin{equation}
@@ -60,7 +60,7 @@ A equação eikonal pode ser definida como uma aproximação de altas frequênci
  
 \subsection*{Equação analítica para ondas refratadas}
 
-Apesar de existir em parametrizações variadas do modelo de velocidade, as formulações para o cálculo das primeiras chegadas possuem certas limitações \cite{kearey2002introduction}. Somente uma variação será explorada, onde o modelo de velocidades deve ser plano paralelo com camadas horizontais sem variação de velocidade lateral e a fonte e os receptores devem estar na mesma profundidade. A equação analítica para este caso pode ser escrita de forma generalizada no formato a seguir  
+Apesar de existir em parametrizações variadas do modelo de velocidade, as formulações para o cálculo das primeiras chegadas possuem certas limitações \cite{kearey2002introduction}. Somente uma variação será explorada, onde o modelo de velocidades deve ser plano paralelo com camadas horizontais sem variação de velocidade lateral e a fonte e os receptores devem estar na mesma profundidade. A equação analítica para este caso pode ser escrita de forma generalizada no formato 
 \begin{equation}
 	\begin{cases}
 		t_n = \dfrac{x}{v_n} + \displaystyle\sum_{i=1}^{n-1} \dfrac{2z_i cos(\theta_{in})}{v_i}\\
@@ -260,7 +260,7 @@ A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao
 
 \section{Inversão tomográfica}
 
-Nas seções anteriores a modelagem direta foi explorada exemplificando maneiras de como calcular o dado de primeira chegada, ou seja as ondas transmitidas e refratadas. Contudo, na natureza a subsuperfície não é conhecida e para realizar os estudos de investigação, somente os registros sísmicos na superfície terrestre são obtidos. A tomografia sísmica pode ser explorada utilizando diferentes formas de onda, como por exemplo as ondas refletidas, difratadas e refratadas. \citeonline{murphy1999manual} resumem as estratégias da tomografia de reflexão, \citeonline{santos2012tomography} comentam sobre as vantagens da tomografia de difração, \citeonline{almeida2013tomografia} e \citeonline{capucci2013tomografia} desenvolvem experimentos relacionados com a tomografia de refração. Todos esses casos partem do mesmo objetivo: minimizar a diferença entre o dado observado e o dado calculado. De maneira geral o dado artificial pode ser gerado pela equação
+Nas seções anteriores a modelagem direta foi explorada exemplificando maneiras de como calcular o dado de primeira chegada, ou seja as ondas transmitidas e refratadas. Contudo, na natureza a subsuperfície não é conhecida e para realizar os estudos de investigação, somente os registros sísmicos na superfície terrestre são obtidos. A tomografia sísmica pode ser explorada utilizando diferentes formas de onda, como por exemplo as ondas refletidas, difratadas e refratadas. \citeonline{murphy1999manual} resumem as estratégias da tomografia de reflexão, \citeonline{santos2012tomography} comentam sobre as vantagens da tomografia de difração, \citeonline{almeida2013tomografia} e \citeonline{capucci2013tomografia} desenvolvem experimentos relacionados com a tomografia de refração. Todos esses casos partem do mesmo objetivo: minimizar a diferença entre o dado observado e o dado calculado.  Aspectos práticos do método tomográfico são amplamente descritos no trabalho de \citeonline{sain2023active}. De maneira geral o dado artificial pode ser gerado pela equação
 \begin{equation}
 	d^{cal} = \displaystyle\int_{raio} s\,dr = g(m),
 \end{equation}
@@ -287,32 +287,74 @@ A função objetivo da tomografia utilizando a norma euclidiana de ordem 2 pode 
 \end{equation}
 \noindent Considerando um raio possuindo coordenadas $x$,$y$ e $z$ na posição $i$, a próxima coordenada pode ser estimada a partir da posição anterior somado a um tamanho de passo $\alpha$ definido em metros multiplicado pela derivada do tempo de trânsito normalizada.  
 
+Para garantir uma solução única em uma equação normal, onde a função objetivo pode ser formulada por
+\begin{equation}
+	\chi(m) = \text{min}||d^{obs} -g(m)||^2_2,
+\end{equation}
+\noindent é necessário que a matriz Hessiana tenha posto completo, ou seja, que suas colunas (ou linhas) sejam linearmente independentes. No entanto, em problemas geofísicos, é comum que a matriz do sistema tenha um determinante próximo de zero, o que indica falta de posto completo. Isso torna o problema inverso geofísico mal posto, apresentando instabilidade e falta de unicidade na solução. A instabilidade refere-se à alta variabilidade do modelo estimado quando há pequenas variações nos dados observados. A falta de unicidade implica que existem vários conjuntos modelos estimados que produzem os mesmos dados observados. Na prática, isso significa que há vários modelos diferentes que minimizam a função de objetivo. Problemas inversos na geofísica geralmente são mal postos devido ao ruído nos dados observados e à própria natureza do problema inverso. Para lidar com esses problemas, é essencial usar regularização, um procedimento matemático que contorna a instabilidade e a falta de unicidade em problemas inversos mal postos. A regularização impõe restrições aos parâmetros estimados, buscando encontrar um conjunto de parâmetros que se ajustem aos dados observados e satisfaçam as restrições estabelecidas, que podem ser de natureza geológica ou matemática e são introduzidas por meio de funções regularizadoras. Mais informações sobre regularização de maneira geral, os trabalhos de \citeonline{tarantola2005inverse} e \citeonline{aster2018parameter} são excelentes para consulta.   
 
-Regularização 
+A regularização de Tikhonov foi utilizada neste trabalho e o equacionamento geral do esquema pode ser formulado da seguinte maneira
+\begin{equation}
+	\chi(m) = \text{min}||d^{obs} - g(m)||^2_2 +\lambda||Rm||^2_2,
+\end{equation}
+\noindent onde $\lambda$ é um escalar que controla a importância relativa da regularização e $R$ representa uma matriz com operadores de derivada. O problema \ref{linearSystem} regularizado pode ser equacionado no formato a seguir
+\begin{equation}
+	(G^TG + \lambda^2 R^TR)\Delta m = G^T \Delta d.
+\end{equation}
+\noindent A regularização de Tikhonov pode ser aplicada em ordens específicas de acordo com o operador de derivada. A matriz $R$ de ordem zero pode escrita da seguinte forma
+\begin{equation}
+	R_0 = 
+	\begin{bmatrix}
+		1 & 0 & 0 & \cdots & 0 \\
+		0 & 1 & 0 & \cdots & 0 \\
+		0 & 0 & 1 & \cdots & 0 \\
+		\vdots & \vdots & \vdots & \ddots & \vdots \\
+		0 & 0 & 0 & \cdots & 1 \\
+	\end{bmatrix}
+	_{M\times M},
+\end{equation}
+\noindent onde seu tamanho depende da quantidade dos parâmetros do modelo $M$. Altas ordens de derivada podem ser aplicadas na regularização de Tikhonov, porém as mais comuns são de zero, primeira e segunda ordens. Neste trabalho a aplicação da regularização de Tikhonov de segunda ordem foi aplicada pois em \citeonline{bulhoes2021efeitos}, esse tipo de regularização demonstrou uma convergência mais rápida em relação às ordens inferiores. Para efeito ilustrativo, a matriz $R$ com operadores de segunda ordem pode ser formulada da seguinte maneira
+\begin{equation}
+	R_2 = 
+	\begin{bmatrix}
+		1      & -2     & 1      & 0      & 0      & \cdots & 0      & 0      & 0 \\
+		0      & 1      & -2     & 1      & 0      & \cdots & 0      & 0      & 0 \\
+		0      & 0      & 1      & -2     & 1      & \cdots & 0      & 0      & 0 \\
+		\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+		0      & 0      & 0      & 0      & 0      & \cdots & 1      & -2     & 1 \\
+	\end{bmatrix}
+	_{(M-2)\times M},
+\end{equation}
+\noindent com tamanho de linhas reduzidas de acordo com a ordem do operador. Mais exemplos clássicos de regularização aplicados no método da tomografia sísmica podem ser encontrados no trabalho de \citeonline{yao1999practical}. Uma contribuição interessante de regularização é a aplicação conjunta de dois regularizadores: Tikhonov e variação total. Iniciada em estudos de inversão completa do campo de onda \cite{lin2014acoustic}, \citeonline{jiang20183d} aplicam a regularização de Tikhonov para estabilizar o problema inverso e em conjunto, aplicam a regularização por variação total para recuperar os altos contrastes, por consequência da regularização de Tikhonov possuir efeitos suavizadores.   
 
+Em problemas tomográficos não lineares a cada iteração se resolve um sistema linear, que dependendo dos aspectos do dado observado e da discretização do modelo a aproximação da matriz Hessiana pode se tornar inviável computacionalmente. Para resolver o problema de forma barata, suas estratégias podem ser aplicadas: a técnica de resolver um problema de mínimos quadrados sem calcular a matriz Hessiana e o armazenamento de matrizes esparsas. A matriz $G$ contendo as distâncias percorridas pelos raios a cada célula pertencente ao modelo de velocidade têm aspectos esparsos, pois cada raio ilumina poucas células no modelo de velocidade. Então a matriz $G$ pode ser ordenada utilizando alguma técnica de armazenamento esparso. A técnica utilizada neste trabalho foi armazenas as coordenadas completas em duas listas e a terceira lista contendo os elementos não nulos da matriz. Essa técnica é relativamente mais cara do que as demais existentes, como a CSR - \textit{compress sparse row} ou a CSC - \textit{compress sparse column}, porém as operações de multiplicação são mais amigáveis de se implementar. Apesar da matriz $G$ possuir características esparsas, a esparsidade da matriz Hessiana não é alta. A técnica de resolução do problema de mínimos quadrados sem o cálculo da matriz $G^TG$ \cite{saad2003iterative} se torna extremamente aplicável no caso da tomografia 3D. O equacionamento da resolução do problema de mínimos quadrados por gradiente conjugado pode ser encontrada no trabalho de \citeonline{capucci2013tomografia}. 
 
-\cite{sain2023active}
+A estrutura do algoritmo de tomografia pode ser ilustrada na figura \ref{tomography_chart}. Inicialmente a leitura dos dados observados é realizada. Após a importação do modelo inicial, a solução eikonal é efetuada para coletar os tempos de trânsito em cada receptor, gerando o dado calculado. Assim o resíduo pode ser efetuado e em seguida a otimização pode ser realizada com a solução do problema de mínimos quadrados, recuperando a variação do modelo de vagarosidade. Uma etapa adicional pode ser aplicada para suavizar o modelo de vagarosidade caso a recuperação tenha gerado artefatos ou se a malha de inversão for esparsa. A suavização utilizando a equação gaussiana foi utilizada neste trabalho. Em seguida, a atualização do modelo pode ser efetuada adicionando a variação recuperada ao modelo de vagarosidade da iteração anterior. 
 
+A etapa de convergência pode considerar o número de iterações desejadas ou uma tolerância específica da norma da função objetivo como critério de parada. Se a convergência for significativa respeitando uma das condições, o processo exporta o modelo final de velocidade e a curva de convergência, e se não respeitar as condições, o processo tomográfico realiza uma nova iteração utilizando o modelo atualizado.      
 
-
-least squares conjugate gradient
-
-armazenamento em matriz esparsa
-
-\cite{saad2003iterative}
-
-
-
-
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=7.5cm, height=12cm]{Imgs/RevisaoBibliografica/tomography_chart.png}
+	\caption{Esquema tomográfico de acordo com o equacionamento apresentado.}
+	\label{tomography_chart}
+\end{figure}
 
 \subsection*{Obtenção do dado observado}
 
+O sismograma completo adquirido no campo são é completamente necessário para a realização da tomografia, somente os pares ($x$,$t$) que compõem as primeiras chegadas. A recuperação dessas posições podem ser recuperadas manualmente, com a seleção manual da primeira chegada. Contudo, essa estratégia consome tempo demasiado em aquisições de larga escala. Duas estratégias são capazes de substituir a abordagem manual de seleção da primeira chegada: as formulações baseadas em amplitude, energia e espectro dos dados e as formulações por aprendizado de máquina e inteligência artificial. \citeonline{sabbione2010automatic} sumarizam as principais estratégias analíticas para a seleção de dados de primeira chegada e mais atualmente, \citeonline{ayub2021comparative} comparam as técnicas de aprendizado de máquina e inteligência artificial desenvolvidas. \citeonline{yuan2022segnet} apresentam uma abordagem interessante para solucionar os problemas de traços irregulares e altos ruídos em seleções automáticas de primeira chegada utilizando inteligencia artificial, já que a abordagem analítica pode gerar artefatos com dados ruidosos. 
 
-
-tipos de picking (manual, analítico, machine learning)
-
-formulação utilizada
-
-\cite{pan2019automatic} 
-\cite{qin2021first} 
+Considerando a utilização de dados sintéticos, a formulação aplicada neste trabalho é analítica baseada no somatório da energia do dado em janelas de percorrimento temporal. \citeonline{pan2019automatic} calcula dois parâmetros relacionados com o traço sísmico 
+\begin{equation}
+	A = \displaystyle\sum_{k=i-n}^{k=i} T_k;\,\,\,\,\,\, B = \displaystyle\sum_{k=i}^{k=i+n} T_k, 
+\end{equation} 
+\noindent onde $i$ é a amostra de tempo atual, $n$ é o tamanho da janela temporal em amostras e $T_k$ é a amplitude do traço na amostra $k$. Assim as variáveis $A$ e $B$ são aplicadas na seguinte equação
+\begin{equation}
+	S = |(B / A)\times(B - A)|,
+\end{equation} 
+\noindent sendo $S$ a indicação de existência de primeiras chegadas no dado. \citeonline{qin2021first} adiciona novos termos para se obter indicações de primeiras chegadas mais precisas formulando a equação
+\begin{equation}
+	S = S\times(B + A)\times(B/A)\times(B-A)/(n+i)^2, 
+	\label{automatic_picking}
+\end{equation}
+\noindent onde $n$ e $i$ são o tamanho da janela em amostras e é a amostra de tempo atual. Com a equação \ref{automatic_picking}, aplicando traço a traço e a cada passo no tempo se observa um sismograma com as mudanças de energia em forma de funções denta de Dirac, sendo que a primeira ocorrência será o tempo da primeira chegada.   
