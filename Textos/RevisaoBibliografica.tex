@@ -37,13 +37,15 @@ A fonte sísmica pode assumir diferentes formas dependendo de seu formato ou equ
 	\begin{cases}
 		f_p = f_{\text{max}} / (3\sqrt{\pi}) \\
 		g(t) = (1 - 2 \pi (\pi f_p t)^2) \exp(-\pi (\pi f_p t)^2),
+		\label{ricker}
 	\end{cases}
 \end{equation}
 \noindent sendo $f_p$ a frequência de pico, $g(t)$ a fonte sísmica e $t$ o eixo do tempo. 
 
 Ao contrário de dados sísmicos reais, onde o planeta absorve por completo a energia da onda, em simulação computacional, para os casos onde a equação da onda não contempla fenômenos dissipativos, existem técnicas para prevenir reflexões indesejadas causadas pelas bordas do modelo finito empregado. A condição de bordas absortivas de \citeonline{cerjan1985nonreflecting} é uma abordagem clássica para resolver o problema de bordas na modelagem sísmica, porém outras formulações mais elaboradas podem ser utilizadas, uma possibilidade é aplicar a formulação descrita no trabalho de \citeonline{chern2019reflectionless}. A condição de borda utilizada neste trabalho é regida pela equação a seguir
 \begin{equation}
-	w(\mathbf{x}) = exp(- p(n_b - \mathbf{x})^2),	
+	w(\mathbf{x}) = exp(- p(n_b - \mathbf{x})^2),
+	\label{cerjan}	
 \end{equation}      
 \noindent onde $w(\mathbf{x})$ é a função amortecimento definida somente nos pontos da borda $\mathbf{x}$, $p$ é um fator de atenuação e $n_b$ é a quantidade de amostras na borda. \citeonline{bording1921finite} compara experimentos para determinar valores otimizados para $n_b$ e $p$, em contrapartida \citeonline{gao2017comparison} mostram que a técnica esponjosa absortiva foi superada pelas novas variantes utilizando modificações da equação da onda. 
 
