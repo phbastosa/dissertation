@@ -4,12 +4,10 @@
 %========================================================================
 \chapter{Conclusão}
 \label{ch:conclusao}
-Algumas recomendações para uma boa conclusão são:
 
-\begin{enumerate}
-	\item Destaque com poucas palavras os resultados mais importantes do seu trabalho
-	\item Relacione sua metodologia com os resultados mais relevantes
-    \item Dadas as suas conclusões, qual é a sua nova opinião sobre o problema investigado e descrito na introdução?
-    \item Quais os próximos passos da investigação? O que você planeja para o futuro?
+A formulação que se mostrou mais precisa a partir dos primeiros experimentos foi o \textit{Fast Sweeping Method} com operadores modificados coletando oito pontos da vizinhança para realizar os cálculos. A junção entre duas formulações: a técnica de paralelização em placa gráfica e a aplicação de operadores mais precisos, foi crucial para viabilizar a formulação acurada em exemplos reais, como mostrado no experimento de modelo complexo. O exemplo com modelo homogêneo mostra que o \textit{Fast Iterative Method} desenvolvido recentemente peca em performance e precisão em relação ao método implementado neste trabalho.  
 
-\end{enumerate}
+Os resultados da tomografia mostraram que para modelos regionais, ou seja de baixa resolução, a imprecisão dos métodos numéricos não afetam de maneria significativa as velocidades recuperadas, apesar das pequenas variações observadas. A inversão tomográfica não foi capaz de lidar com os altos contrastes empregados no modelo de referência por limitações de estabilidade do problema inverso, como a escolha da de regularização e a discretização do modelo de inversão. 
+
+Para trabalhos futuros, uma abordagem mais eficiente de seleção das ondas de primeira chegada poderia ser considerada para utilização em dados reais. A formulação da tomografia utilizando operadores do estado adjunto poderia deve ser implementada pois algumas vantagens em relação à tomografia clássica por trajetórias de raios são observadas. A aplicação da tomografia em dados reais seria a próxima etapa da jornada, contudo utilizando um método de modelagem direta testado e avaliado em performance e precisão. A adição de parâmetros anisotrópicos é uma opção para representar melhor as propriedades do meio em casos reais. 
+
