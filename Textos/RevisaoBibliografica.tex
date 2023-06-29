@@ -352,11 +352,11 @@ Considerando a utilização de dados sintéticos, a formulação aplicada neste 
 \end{equation} 
 \noindent onde $i$ é a amostra de tempo atual, $n$ é o tamanho da janela temporal em amostras e $T_k$ é a amplitude do traço na amostra $k$. Assim as variáveis $A$ e $B$ são aplicadas na seguinte equação
 \begin{equation}
-	S = |(B / A)\times(B - A)|,
+	F = |(B / A)\times(B - A)|,
 \end{equation} 
-\noindent sendo $S$ a indicação de existência de primeiras chegadas no dado. \citeonline{qin2021first} adiciona novos termos para se obter indicações de primeiras chegadas mais precisas formulando a equação
+\noindent sendo $F$ a indicação de existência de primeiras chegadas no dado. \citeonline{qin2021first} adiciona novos termos para se obter indicações de primeiras chegadas mais precisas formulando a equação
 \begin{equation}
-	S = S\times(B + A)\times(B/A)\times(B-A)/(n+i)^2, 
+	F = F\times(B + A)\times(B/A)\times(B-A)/(n+i)^2, 
 	\label{automatic_picking}
 \end{equation}
 \noindent onde $n$ e $i$ são o tamanho da janela em amostras e é a amostra de tempo atual. Com a equação \ref{automatic_picking}, aplicando traço a traço e a cada passo no tempo se observa um sismograma com as mudanças de energia em forma de funções denta de Dirac, sendo que a primeira ocorrência será o tempo da primeira chegada.   
