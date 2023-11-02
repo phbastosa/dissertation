@@ -2,18 +2,16 @@
 % Modelo para elaboracao de textos academicos: TCC, dissertacoes e teses
 % Elaborado pelo GISIS - Grupo de Imageamento Sismico e Inversao Sismica.
 %========================================================================
-\chapter{Resultados}
+\chapter{Resultados e Discussões}
 \label{ch:resultados}
 
-Neste capítulo, são apresentados os resultados da comparação entre os métodos de \citeonline{podvin1991finite}, \citeonline{jeong2008fast} e \citeonline{noble2014accurate} em termos de precisão no cálculo dos tempos de trânsito, desempenho computacional e recuperação dos modelos por inversão tomográfica. 
+Neste capítulo, são apresentados os resultados da comparação entre os métodos de \citeonline{podvin1991finite}, \citeonline{jeong2008fast} e \citeonline{noble2014accurate} em termos de precisão no cálculo dos tempos de trânsito e desempenho computacional. Assim que apresentados, ambos recebem suas respectivas discussões individualmente.
 
-\section{Experimentos comparativos de modelagem}
+A aplicação com modelo homogêneo replica o experimento realizado no trabalho de \citeonline{cai2023improved}, onde a inovação em precisão foi desenvolvida para o \textit{Fast Iterative Method}. A aplicação com modelo de duas camadas replica o experimento contido em \citeonline{alves2022refraction}. E a aplicação em modelo complexo mostra como os tempos de trânsito se comportam na presença de altos contrastes de velocidade e qual o tempo de execução para cada método no modelo mais realístico.    
 
-Como relatado no capítulo anterior, experimentos com modelo homogêneo, de refração e complexo são explorados. A aplicação com modelo homogêneo replica o experimento realizado no trabalho de \citeonline{cai2023improved}, onde a inovação em precisão foi desenvolvida para o \textit{Fast Iterative Method}. A aplicação com modelo de duas camadas replica o experimento contido em \citeonline{alves2022refraction}. E a aplicação em modelo complexo mostra como os tempos de trânsito se comportam na presença de altos contrastes de velocidade e qual o tempo de execução para cada método no modelo mais realístico.    
+\section{Aplicação em modelo homogêneo}
 
-\subsection{Aplicação em modelo homogêneo}
-
-A Tabela \ref{table_homog} apresenta os tempos de execução, o erro médio e o erro máximo para cada formulação. Os resultados gerados utilizando a implementação de \citeonline{cai2023improved} foram executados no mesmo ambiente que os demais métodos, devido a disponibilização do código publicamente.   
+A Tabela \ref{table_homog} apresenta os tempos de execução, o erro médio e o erro máximo para cada formulação. Os resultados gerados utilizando a implementação de \citeonline{cai2023improved} foram executados no mesmo ambiente, segundo as configurações apresentadas no capítulo de Metodologia, devido a disponibilização do código publicamente.  
 
 \begin{table}[H]
 	\caption{Tempo de execução, erro médio e máximo em relação a equação analítica para meio homogêneo. Aplicação dos métodos utilizados relacionando com os resultados do experimento de \citeonline{cai2023improved}.}
@@ -27,29 +25,11 @@ A Tabela \ref{table_homog} apresenta os tempos de execução, o erro médio e o 
 	\label{table_homog}
 \end{table}
 
-\subsection{Aplicação em modelo de refração}
+No teste do modelo homogêneo (Tabela \ref{table_homog}) nota-se a superioridade em performance do método de \citeonline{jeong2008fast}, porém os erros registrados são os mais altos em relação aos outros métodos testados. O método de \citeonline{cai2023improved} consegue reduzir o erro do \textit{Fast Iterative Method}, contudo, além de não ser o mais preciso entre os métodos analisados, a nova formulação demostrou performance inferior em relação às demais estudadas. O método que demonstrou mais precisão foi a nova implementação do \textit{Fast Sweeping Method} utilizando a estratégia de paralelização de \citeonline{detrixhe2013parallel} e os operadores desenvolvidos no trabalho de \citeonline{noble2014accurate}. A eficiência computacional do \textit{Fast Sweeping Method} não se destacou como a mais performática, porém se demonstra promissora ao considerar o conjunto entre precisão e performance.  
 
-As Figuras \ref{fig:general_refraction_study}, \ref{fig:precision_refraction_study} e \ref{fig:reciprocity_refraction_study} exibem todo o estudo de precisão com os tempos calculados da fonte para os receptores (tempos diretos) e dos receptores para a fonte (tempos recíprocos). As cores indicam os métodos, sendo o azul para a formulação de \citeonline{podvin1991finite}, o amarelo para a formulação de \citeonline{jeong2008fast} e o verde para a formulação de \citeonline{noble2014accurate}. Os estilos de linha representam o parâmetro de discretização, então, as linhas sólidas representam o modelo de 25 m, as linhas tracejadas, o de 50 m, e as linhas com ponto e traço, o de 100 m. A Figura \ref{fig:general_refraction_study}a mostra a configuração de todos os métodos para o tiro central, sendo o tempo analítico a linha sólida de cor preta. As Figuras \ref{fig:precision_refraction_study}a, \ref{fig:precision_refraction_study}b e \ref{fig:precision_refraction_study}c mostram a ordem do erro para cada método e as Figuras \ref{fig:reciprocity_refraction_study}a, \ref{fig:reciprocity_refraction_study}b e \ref{fig:reciprocity_refraction_study}c mostram as diferenças entre o tempo direto e recíproco para cada método utilizando o modelo de 25 m.  
+\section{Aplicação em modelo de refração}
 
-\begin{figure}[H]
-	\centering
-	\subfloat[]{\includegraphics[width=16cm,height=6cm]{Imgs/RevisaoBibliografica/precision_direct.png}\label{fig:rnca}}\newline
-	\subfloat[]{\includegraphics[width=16cm,height=6cm]{Imgs/RevisaoBibliografica/reciprocity.png}\label{fig:rncb}} 
-	\caption{Panorama geral do comportamento dos tempos de trânsito para todos os métodos estudados. (a) exibe a variação para cada discretização do modelo de velocidade e (b) mostra somente o estudo de reciprocidade aplicado no modelo de 25 m.}
-	\label{fig:general_refraction_study}	
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_pod_direct.png}\label{fig:rncc}}\newline
-	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_fim_direct.png}\label{fig:rnce}}\newline
-	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_fsm_direct.png}\label{fig:rncg}}\newline
-		
-	\caption{Diferença entre os tempos analítico $t_a$ e numérico $t_n$ por método em relação aos parâmetros de discretização do modelo. (a) o método clássico de \citeonline{podvin1991finite}, (b) o FIM e (c) o FSM utilizando discretizações de 100, 50 e 25 m.}
-	\label{fig:precision_refraction_study}	
-\end{figure}
-
-A superioridade de precisão do método \citeonline{noble2014accurate} pode ser identificada na Figura \ref{fig:precision_refraction_study}, porém no estudo de reciprocidade a inicialização causou instabilidade na modelagem, como mostrado na Figura \ref{fig:reciprocity_refraction_study}c. Para iniciar o cálculo dos tempos de trânsito, todo o volume é inicializado com um valor tendendo ao infinito e somente os pontos vizinhos da fonte são inicializados com o tempo analítico para velocidade constante. O algoritmo original de \citeonline{noble2014accurate} inicializa analiticamente somente os pontos do primeiro octante, porém o estudo de reciprocidade mostrou que a inicialização deve ser feita para os pontos vizinhos em todas as direções.  
+As Figuras \ref{fig:general_refraction_study}, \ref{fig:precision_refraction_study} e \ref{fig:reciprocity_refraction_study} exibem todo o estudo de precisão com os tempos calculados da fonte para os receptores (tempos diretos) e dos receptores para a fonte (tempos recíprocos). As cores indicam os métodos, sendo o azul para a formulação de \citeonline{podvin1991finite}, o amarelo para a formulação de \citeonline{jeong2008fast} e o verde para a formulação de \citeonline{noble2014accurate}. Os estilos de linha representam o parâmetro de discretização, então, as linhas sólidas representam o modelo de 25 m, as linhas tracejadas, o de 50 m, e as linhas com ponto e traço, o de 100 m. 
 
 \begin{table}[H]
 	\caption{Tempo de execução para cada discretização e reciprocidade para o modelo de 25 m.}
@@ -62,6 +42,34 @@ A superioridade de precisão do método \citeonline{noble2014accurate} pode ser 
 	\label{table_refModel}
 \end{table}
 
+A Tabela \ref{table_refModel} mostra, para cada método testado, um teste de escalabilidade, onde o domínio do problema cresce para verificar o desempenho computacional dos métodos numéricos. A análise de reciprocidade foi crucial para verificar extravasamentos de memória quando aplicadas múltiplas posições de tiro. A validação em aplicações de imageamento sísmico também pode ser observada a partir do estudo de reciprocidade, pois o tempo de execução importa na geração de resultados. 
+
+A Figura \ref{fig:general_refraction_study} mostra a configuração de todos os métodos para o tiro central, sendo o tempo analítico a linha sólida de cor preta. A Figura \ref{fig:precision_refraction_study} mostra a ordem do erro para cada método e a Figura \ref{fig:reciprocity_refraction_study} mostra as diferenças entre o tempo direto e recíproco para cada método utilizando o modelo de duas camadas com 25 m de discretização.  
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=16cm,height=6cm]{Imgs/RevisaoBibliografica/precision_direct.png}\label{fig:rnca}}\newline
+	\subfloat[]{\includegraphics[width=16cm,height=6cm]{Imgs/RevisaoBibliografica/reciprocity.png}\label{fig:rncb}} 
+	\caption{Panorama geral do comportamento dos tempos de trânsito para todos os métodos estudados. (a) exibe a variação para cada discretização do modelo de velocidade e (b) mostra somente o estudo de reciprocidade aplicado no modelo de 25 m.}
+	\label{fig:general_refraction_study}	
+\end{figure}
+
+A solução clássica demonstrou desempenho computacional razoável para problemas pequenos, porém quando a dimensão do problema aumenta os tempos de execução não se adequam aos demais métodos. Sendo assim a formulação clássica diminui consideravelmente sua performance, no modelo com 25 m de discretização, enquanto as demais formulações mantêm seus patamares abaixo de um segundo de tempo de execução. O \textit{Fast Iterative Method} demonstrou o melhor desempenho computacional em todas as análises. Para problemas onde a precisão do cálculo dos tempos de trânsito é requerida, o \textit{Fast Iterative Method} não é tão recomendado, porém para problemas de \textit{Path Fiding} ou \textit{Shape from Shading} o método de \citeonline{jeong2008fast} é extremamente recomendável. Com a implementação em paralelo utilizando a técnica de \citeonline{detrixhe2013parallel} a variação do \textit{Fast Sweeping Method} com operadores precisos de \citeonline{noble2014accurate} demonstrou uma performance comparável ao método de \citeonline{jeong2008fast} principalmente quando aplicado no modelo de menor discretização.  
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_pod_direct.png}\label{fig:rncc}}\newline
+	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_fim_direct.png}\label{fig:rnce}}\newline
+	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_fsm_direct.png}\label{fig:rncg}}\newline
+		
+	\caption{Diferença entre os tempos analítico $t_a$ e numérico $t_n$ por método em relação aos parâmetros de discretização do modelo. (a) o método clássico de \citeonline{podvin1991finite}, (b) o FIM e (c) o FSM utilizando discretizações de 100, 50 e 25 m.}
+	\label{fig:precision_refraction_study}	
+\end{figure}
+
+A Figura \ref{fig:precision_refraction_study} mostra que a diferença entre a solução analítica e a solução numérica aumentam de acordo com a esparsidade da malha, ou seja, os erros são proporcionais ao refinamento do modelo como consequência das limitações do método das diferenças finitas. A solução para melhorar a precisão é aumentar o operador de diferenças finitas para utilizar mais pontos vizinhos no cálculo dos tempos de trânsito \cite{noble2014accurate,cai2023improved}. Outra característica a se destacar na Figura \ref{fig:precision_refraction_study} são os formatos dos erros sendo periódicos de acordo com a geometria circular, causados pela formulação em coordenadas cartesianas \cite{white2020pykonal}. 
+
+A relação de precisão entre os métodos é bem distante, sendo a formulação clássica com erros intermediários, o \textit{Fast Sweeping Method} com erros pequenos e o \textit{Fast Iterative Method} com maiores erros (Figura \ref{fig:precision_refraction_study}). Sendo assim, para problemas geofísicos, o \textit{Fast Sweeping Method} se destaca com sua performance aceitável para a precisão que proporciona, sendo o mais recomendável neste trabalho.       
+
 \begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[width=16cm,height=3cm]{Imgs/RevisaoBibliografica/error_pod_reciprocity.png}\label{fig:rncd}}\newline
@@ -72,29 +80,12 @@ A superioridade de precisão do método \citeonline{noble2014accurate} pode ser 
 	\label{fig:reciprocity_refraction_study}
 \end{figure}
 
-%(a) Mapeamento das chegadas para os métodos numéricos testados para os espaçamentos estudados. (b) Estudo de reciprocidade utilizando o espaçamento de 25 m. (c) Escala do erro para as chegadas em diferentes espaçamentos e (d) tempo direto e recíproco da formulação de \citeonline{podvin1991finite}. (e) Escala do erro e (f) reciprocidade para o método de \citeonline{jeong2008fast}. (g) Escala do erro e (h) reciprocidade para o método de \citeonline{noble2014accurate}.
+A superioridade de precisão do \textit{Fast Sweeping Method} pode ser identificada também na Figura \ref{fig:reciprocity_refraction_study}, porém no estudo de reciprocidade a inicialização causou instabilidade na modelagem, como mostrado na Figura \ref{fig:reciprocity_refraction_study}c. Para iniciar o cálculo dos tempos de trânsito, todo o volume é inicializado com um valor tendendo ao infinito e somente os pontos vizinhos da fonte são inicializados com o tempo analítico para velocidade constante (equação \ref{analyticalT}). O algoritmo original de \citeonline{noble2014accurate} inicializa analiticamente somente os pontos do primeiro octante, porém o estudo de reciprocidade mostrou que a inicialização deve ser feita para os pontos vizinhos em todas as direções, ou seja,  nos oito octantes vizinhos da fonte como mostrado na Figura \ref{fig:voxel_full}. Após as correções, uma nova modelagem utilizando reciprocidade foi performada validando ainda mais a precisão do \textit{Fast Sweeping Method}, como mostrado, em linha tracejada verde, na Figura \ref{fig:reciprocity_refraction_study}c.
 
 
-A Tabela \ref{table_refModel} mostra, para cada método testado, seus respectivos resultados de tempo de execução. A análise de reciprocidade foi crucial para verificar extravasamentos de memória quando aplicadas múltiplas posições de tiro. A validação em aplicações de imageamento sísmico também pode ser observada a partir do estudo de reciprocidade, pois o tempo de execução importa na geração de resultados.  
-
-
-
-\subsection{Aplicação em modelo complexo}
+\section{Aplicação em modelo complexo}
 
 As Figuras \ref{fig:overthrust_inner_circle}, \ref{fig:overthrust_mid_circle} e \ref{fig:overthrust_outer_circle} mostram os resultados gerados a partir do esquema de modelagem com geometria circular aplicado no modelo SEG/EAGE \textit{Overthrust}. Novamente as cores da figura indicam cada método, sendo a cor azul para a formulação de \citeonline{podvin1991finite}, laranja para \citeonline{jeong2008fast} e verde para a formulação de \citeonline{noble2014accurate}. As figuras são ampliações do sismograma de primeira chegada com uma seleção de estações que evidencia a disparidade entre os tempos de trânsito. Como a equação eikonal é uma aproximação da equação da onda para altas frequências, espera-se que os detalhes do modelo sejam identificados no dado, então, as janelas amplificadoras facilitam a identificação desses aspectos.    
-
-\begin{table}[H]
-	\caption{Tempo de execução para a aplicação dos métodos no modelo complexo.}
-	\begin{tabular}{r|c}
-		& Tempo de execução \\ \hline
-		\citeonline{podvin1991finite} & 11,7128 s  \\ \hline
-		\citeonline{jeong2008fast} & 2,5595 s      \\ \hline
-		\citeonline{noble2014accurate} & 3,4746 s         
-	\end{tabular}
-	\label{table_overthrust}
-\end{table}
-
-A Tabela \ref{table_overthrust} apresenta os tempos de execução para cada método utilizando o modelo complexo em geometria circular aplicando somente um tiro no centro do modelo. A superioridade de performance é atribuída ao método de \citeonline{jeong2008fast}, porém essa metodologia possui atrasos severos em relação aos tempos de trânsito calculados comparado à equação analítica e aos demais métodos testados.
 
 \begin{figure}[H]
 	\centering
@@ -120,67 +111,22 @@ O atraso intrínseco das formulações de \citeonline{podvin1991finite} e \citeo
 	\label{fig:overthrust_outer_circle}
 \end{figure}
 
-\section{Experimento tomográfico}
+A Tabela \ref{table_overthrust} apresenta os tempos de execução para cada método utilizando o modelo complexo em geometria circular aplicando somente um tiro no centro do modelo. A superioridade de performance é atribuída ao método de \citeonline{jeong2008fast}, porém essa metodologia possui atrasos severos em relação aos tempos de trânsito calculados comparado à equação analítica e aos demais métodos testados.
 
-Basicamente, os resultados gerados pelo processo tomográfico não linear são os modelos da última iteração e as curvas de convergência indicando a diminuição da função objetivo minimizando a diferença entre o dado observado e calculado. O esquema realizado se divide em duas etapas, sendo a primeira uma inversão utilizando um modelo de malha esparsa e a segunda utilizando o modelo resultante da inversão anterior aplicando uma malha refinada. A Figura \ref{fig:convergencia} mostra a curva de convergência para as duas etapas de inversão, sendo que até a quinta iteração o processo aplicado foi utilizando a malha esparsa e as demais iterações para malha refinada, totalizando dez iterações na tentativa de realçar detalhes no modelo de velocidade.   
+\begin{table}[H]
+	\caption{Tempo de execução para a aplicação dos métodos no modelo complexo.}
+	\begin{tabular}{r|c}
+		& Tempo de execução \\ \hline
+		\citeonline{podvin1991finite} & 11,7128 s  \\ \hline
+		\citeonline{jeong2008fast} & 2,5595 s      \\ \hline
+		\citeonline{noble2014accurate} & 3,4746 s         
+	\end{tabular}
+	\label{table_overthrust}
+\end{table}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=6cm]{Imgs/Resultados/convergencia.png}
-	\caption{Mapa de convergência tomográfica para os métodos estudados. Iterações entre 0 e 5 a malha esparsa foi aplicada no processo de inversão. Iterações entre 6 e 15 a malha refinada foi utilizada na tomografia.}
-	\label{fig:convergencia}	
-\end{figure}
+A aplicação dos métodos no modelo complexo foi realizada com sucesso, então, os tempos de trânsito (Figuras \ref{fig:overthrust_inner_circle}, \ref{fig:overthrust_mid_circle} e \ref{fig:overthrust_outer_circle}) e de execução (Tabela \ref{table_overthrust}) foram registrados. Novamente, o método clássico demonstrou tempo de execução acima dos demais para problemas grandes. O método de \citeonline{jeong2008fast} demonstra eficiência computacional e o \textit{Fast Sweeping Method} performa 26$\%$ abaixo do método mais performático. Considerando o ganho de precisão, a diferença de performance pode ser desconsiderada pois \citeonline{cai2023improved} mostram a utilização do método original de \citeonline{jeong2008fast} na migração Kirchhoff em profundidade, onde os erros de posicionamento dos refletores são amplamente perceptíveis. Os tempos de trânsito ilustrados nas Figuras \ref{fig:overthrust_inner_circle}, \ref{fig:overthrust_mid_circle} e \ref{fig:overthrust_outer_circle} mostram as discrepâncias entre os métodos aplicados ao modelo SEG/EAGE \textit{Overthrust}, sendo que os atrasos percebidos na Figura \ref{fig:precision_refraction_study} se repetem, porém no modelo complexo. Se mostra visível nas Figuras \ref{fig:overthrust_inner_circle}, \ref{fig:overthrust_mid_circle} e \ref{fig:overthrust_outer_circle} os detalhes que o modelo impõe aos tempos de trânsito, nas formulações de \citeonline{podvin1991finite} e \citeonline{noble2014accurate}, e a falta de definição para a formulação menos precisa de \citeonline{jeong2008fast}.  
 
-Os modelos foram limitados e o descarte das amostras nas extremidades do modelo foi considerado no momento da otimização. Esse descarte ocorreu pois os raios não iluminavam essas regiões e assim uma instabilidade na solução do sistema linear era registrada. A eliminação das amostras ocorreu em um espaçamento de 200 m nas laterais do modelo. A inversão também não considerou atualizações na camada de água, somente a partir de uma profundidade fixa de 200 m. O horizonte do fundo marinho do modelo de referência tem profundidade mínima de 200 m, ou seja, a profundidade do horizonte está inteiramente contida no domínio da inversão.     
 
-\subsection{Inversão com malha esparsa}
 
-Os modelos recuperados utilizando a inversão com malha esparsa podem ser visualizados nas Figuras \ref{fig:pod_sparse}, \ref{fig:fim_sparse} e \ref{fig:fsm_sparse}, sendo que os métodos de \citeonline{podvin1991finite}, \citeonline{jeong2008fast} e \citeonline{noble2014accurate} foram considerados, respectivamente, na resolução do problema direto. Todos os modelos apresentaram aspectos suaves pelo estilo de regularização usado e pela suavização gaussiana empregada a cada iteração. A segunda condição de suavização imposta se concretizou na tentativa de reduzir artefatos nos modelos recuperados. A suavização gaussiana foi aplicada na variação da vagarosidade recuperada após a resolução do sistema linear com uma janela de cinco amostras e desvio padrão $\sigma = 2$. Nas imagens de resultado, o descarte de pontos nas extremidades do modelo fica nítido pois nessas regiões o modelo inicial foi completamente conservado. O aumento do tamanho da malha pode ser um estabilizador do problema tomográfico, já que mais raios iluminam as células tornando o problema inverso melhor determinado. A suavidade do modelo já era esperada pois os artifícios de interpolação trilinear da variação do modelo de vagarosidade recuperado a cada iteração prejudica a conservação de altos contrastes. 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/pod_sparse.png}
-	\caption{Modelo obtido utilizando o método clássico em malha esparsa.}
-	\label{fig:pod_sparse}	
-\end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/fim_sparse.png}
-	\caption{Modelo obtido utilizando o \textit{Fast Iterative Method} em malha esparsa.}
-	\label{fig:fim_sparse}	
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/fsm_sparse.png}
-	\caption{Modelo obtido utilizando o \textit{Fast Sweeping Method} em malha esparsa.}
-	\label{fig:fsm_sparse}	
-\end{figure}
-
-\subsection*{Inversão com malha refinada}
-
-Os resultados após dez iterações com malha refinada utilizando como modelo inicial os resultados anteriores obtidos com a malha esparsa estão ilustrados nas Figuras \ref{fig:pod_refined}, \ref{fig:fim_refined} e \ref{fig:fsm_refined}, com a mesma sequência de métodos utilizada no resultado de malha esparsa.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/pod_refined.png}
-	\caption{Modelo recuperado utilizando o método clássico em malha refinada.}
-	\label{fig:pod_refined}	
-\end{figure}
-
-Para efeitos de realce dos detalhes no modelo de velocidade recuperado, a suavização gaussiana iterativa foi desativada no processo tomográfico. Portanto, nota-se um aumento dos artefatos de inversão causados pela distância entre as posições de receptores, já que a simulação utilizou o princípio da reciprocidade.      
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/fim_refined.png}
-	\caption{Modelo recuperado utilizando o \textit{Fast Iterative Method} em malha refinada.}
-	\label{fig:fim_refined}	
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=16cm,height=11cm]{Imgs/Resultados/fsm_refined.png}
-	\caption{Modelo recuperado utilizando \textit{Fast Sweeping Method} em malha refinada.}
-	\label{fig:fsm_refined}	
-\end{figure}

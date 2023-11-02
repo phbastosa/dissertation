@@ -5,7 +5,13 @@
 \chapter{Revisão Bibliográfica}
 \label{ch:revisaobibliografica}
 
-A modelagem e a tomografia sísmicas são técnicas essenciais na exploração de recursos naturais subterrâneos e na caracterização da subsuperfície terrestre. A tomografia sísmica é um método não invasivo que permite mapear as propriedades físicas do subsolo através da análise das ondas sísmicas geradas por fontes controladas. Um dos principais desafios na tomografia sísmica é a obtenção de informações precisas sobre as trajetórias das ondas sísmicas e suas velocidades de propagação em diferentes camadas geológicas. Nesse sentido, a equação eikonal  é uma ferramenta fundamental para a modelagem, a inversão e o imageamento sísmico, pois descreve as frentes de onda e permite calcular os tempos de percurso das ondas sísmicas. Neste capítulo é explorada a equação eikonal com três resoluções numéricas e sua aplicação na tomografia de refração. Ao explorar esses tópicos, este capítulo fornecerá conceitos utilizados na geração dos resultados deste trabalho.
+A crescente demanda por simulações precisas e eficientes em geofísica, especialmente na modelagem sísmica, tem impulsionado o desenvolvimento de técnicas avançadas de computação paralela e soluções numéricas especializadas. A modelagem sísmica desempenha um papel vital na análise e interpretação de dados sísmicos, permitindo a visualização e caracterização de estruturas geológicas complexas. Neste capítulo, será realizada uma revisão dos principais conceitos sobre computação paralela, sobre a equação da onda acústica de densidade constante e sobre três soluções numéricas para a equação eikonal. 
+
+\section{Computação de alto desempenho}
+
+A programação de alta performance com placas gráficas, conhecida como GPGPU (\textit{General-Purpose computing on Graphics Processing Units}), tem se destacado devido à sua capacidade de acelerar o processamento de tarefas intensivas computacionalmente. A utilização eficiente da arquitetura paralela das GPUs possibilita a execução simultânea de um grande número de pequenos processos, resultando em desempenho significativamente superior em comparação com abordagens convencionais baseadas em CPU \cite{luebke2008cuda}. A implementação eficaz de modelos de programação paralela, como o paralelismo de dados e o paralelismo de tarefas se torna eficaz para resolver grandes problemas em geociências. O paralelismo de dados envolve a divisão de grandes conjuntos de dados em blocos menores para processamento simultâneo, enquanto o paralelismo de tarefas permite a execução concorrente de diferentes operações independentes. A utilização adequada desses modelos de programação paralela é essencial para a exploração eficiente do potencial de processamento paralelo das GPUs e para a maximização do desempenho computacional  \cite{sterling2017high}.
+
+A otimização e eficiência na programação em placas gráficas envolvem a aplicação de técnicas especializadas, como o uso eficiente da memória compartilhada, a minimização da latência de acesso à memória global, a redução da sobrecarga de comunicação entre a CPU e a GPU, e a minimização do tráfego de dados entre essas unidades. Além disso, a utilização de algoritmos otimizados e a redução da fragmentação de dados são cruciais para garantir o máximo aproveitamento dos recursos de processamento disponíveis \cite{luebke2008cuda}. Diversas linguagens de programação e bibliotecas foram desenvolvidas para facilitar a programação de alta performance em GPUs, incluindo CUDA, OpenCL e Vulkan. Essas linguagens oferecem abstrações de nível mais alto e permitem a implementação eficiente de algoritmos complexos, explorando todo o potencial de processamento paralelo das placas gráficas. As tendências futuras nesse campo incluem o desenvolvimento de arquiteturas de GPU mais especializadas e adaptadas a tarefas específicas, bem como o avanço contínuo de técnicas de programação paralela para atender às demandas cada vez maiores de processamento de dados e cálculos intensivos \cite{sterling2017high}. Neste trabalho a implementação dos algoritmos de modelagem foi implementada em CUDA C++ para minimizar o tempo de execução no cálculo das ondas de primeira chegada em três dimensões.
 
 \section{Modelagem sísmica}
 
@@ -170,9 +176,7 @@ Os operadores 3D são altamente condicionais, utilizam três pontos vizinhos e, 
 	\label{PMQ-R}
 \end{multline}
 
-A resolução da equação eikonal é iterativa e, a cada iteração, é necessário que uma frente de onda se expanda passando pelos pontos onde o tempo de trânsito é desconhecido. Inicialmente, o volume dos tempos de trânsito recebe o valor zero na fonte e um valor tendendo ao infinito nas demais posições. Os pontos vizinhos à posição da fonte são inicializados utilizando a equação da cinemática clássica $t = x / v$, considerando que cada bloco do modelo possui um valor de velocidade constante. Para posições de fonte irregulares, ou seja, posições que não pertencem a nenhum ponto da malha, o tempo da fonte é inicializado de acordo com a distância entre a fonte e o ponto da malha mais próximo. Assim, a solução iterativa de \citeonline{podvin1991finite} pode propagar o tempo inicial para as demais posições automaticamente. Após a inicialização, um volume lógico é inicializado com valores de verdadeiro e falso, sendo verdadeiro utilizando para as posições que convergiram para um tempo de trânsito aceitável e falso, para posições que ainda não convergiram. O número de iterações depende da distância, em pontos de malha, entre a posição da fonte e as extremidades do modelo de velocidade, sendo a maior distância em pontos de malha que houver. Durante as iterações, todos os pontos do modelo são acessados, porém as equações são calculadas somente onde o volume lógico indica necessidade de atualização. A partir do momento que o tempo de trânsito de um certo ponto atinge a confiabilidade dada por uma tolerância, novos pontos são acionados como verdadeiros e assim, os operadores computam novos tempos em regiões ainda não exploradas até completar toda a extensão do modelo de velocidades. Para registrar os tempos de trânsito em cada posição de receptor, basta coletar o tempo do volume de tempos de trânsito e para posições irregulares, a interpolação tri-linear foi utilizada para resolver o problema.  
-
-A solução de \citeonline{podvin1991finite} é altamente paralelizável. Um processo que pode ser paralelizado é aquele que possui problemas pequenos que podem ser resolvidos de forma independente e assim simultaneamente. O algoritmo desenvolvido pelo autor deste trabalho, para resolver a equação eikonal utilizando os operadores de \citeonline{podvin1991finite}, pode ser encontrado na plataforma de compartilhamento de código aberto GitHub.  
+A resolução da equação eikonal é iterativa e, a cada iteração, é necessário que uma frente de onda se expanda passando pelos pontos onde o tempo de trânsito é desconhecido. Inicialmente, o volume dos tempos de trânsito recebe o valor zero na fonte e um valor tendendo ao infinito nas demais posições. Os pontos vizinhos à posição da fonte são inicializados utilizando a equação da cinemática clássica $t = x / v$, considerando que cada bloco do modelo possui um valor de velocidade constante. Para posições de fonte irregulares, ou seja, posições que não pertencem a nenhum ponto da malha, o tempo da fonte é inicializado de acordo com a distância entre a fonte e o ponto da malha mais próximo. Assim, a solução iterativa de \citeonline{podvin1991finite} pode propagar o tempo inicial para as demais posições automaticamente. Após a inicialização, um volume lógico é inicializado com valores de verdadeiro e falso, sendo verdadeiro utilizando para as posições que convergiram para um tempo de trânsito aceitável e falso, para posições que ainda não convergiram. O número de iterações depende da distância, em pontos de malha, entre a posição da fonte e as extremidades do modelo de velocidade, sendo a maior distância em pontos de malha que houver. Durante as iterações, todos os pontos do modelo são acessados, porém as equações são calculadas somente onde o volume lógico indica necessidade de atualização. A partir do momento que o tempo de trânsito de um certo ponto atinge a confiabilidade dada por uma tolerância, novos pontos são acionados como verdadeiros e assim, os operadores computam novos tempos em regiões ainda não exploradas até completar toda a extensão do modelo de velocidades. O algoritmo desenvolvido pelo autor deste trabalho, para resolver a equação eikonal utilizando os operadores de \citeonline{podvin1991finite}, pode ser encontrado na plataforma de compartilhamento de código aberto GitHub. 
 
 \subsection{\textit{Fast Iterative Method}}
 
@@ -224,7 +228,7 @@ A versão utilizada neste trabalho decompõe o modelo em pequenos blocos contend
 	}
 \end{algorithm}
 
-O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é ordenar as diferenças dos tempos de trânsito dos vizinhos diretos do ponto alvo $T_{ijk}$ e aplicar condições de iluminação desenvolvidas empiricamente por \citeonline{jeong2008fast}. Para registrar os tempos das primeiras chegadas, as posições dos receptores são projetadas no volume de tempo de trânsito e para posições irregulares, fora da malha, a interpolação tri-linear é utilizada, assim como mencionado na seção anterior.  
+O algoritmo 1 mostra o núcleo de resolução do FIM, onde o primeiro passo é ordenar as diferenças dos tempos de trânsito dos vizinhos diretos do ponto alvo $T_{ijk}$ e aplicar condições de iluminação desenvolvidas empiricamente por \citeonline{jeong2008fast}. 
 
 \subsection{\textit{Fast Sweeping Method}}
 
@@ -253,102 +257,53 @@ O \textit{Fast Sweeping Method} (FSM) \cite{zhao2005fast} é uma formulação qu
 
 A primeira forma de paralelização do FSM foi desenvolvida por \citeonline{zhao2007parallel}, porém limitações para grande quantidade de processos simultâneos foram encontradas, fazendo com que o tempo de execução se estabelecesse constante com o aumento do poder computacional. \citeonline{detrixhe2013parallel} desenvolvem uma técnica que supera o problema encontrado na formulação de \citeonline{zhao2007parallel}, onde a performance é proporcional ao aumento do poder computacional. Basicamente, a direção de percorrimento no modelo de tempo de trânsito acontece em planos diagonais e os pontos desses planos podem ser atualizados simultaneamente. O modelo de propriedades de formato cúbico ou paralelepipédico possui oito quinas, então, a partir de cada quina, a direção de percorrimento segue de uma quina origem até a quina espelhada oposta, percorrendo cada plano diagonal e aplicando os operadores de diferenças finitas. Por consequência da implementação dos operadores 3D de precisão, somente três formas de resolução são aplicadas no núcleo do FSM. O primeiro segue o formado dos operadores 1D de \citeonline{vidale1988finite} e \citeonline{podvin1991finite}, baseados na cinemática clássica (equação \ref{1d_head_wave}), o segundo segue os operadores 2D de quatro pontos apresentados por \citeonline{vidale1988finite} e o terceiro é a expansão do operador 3D de \citeonline{noble2014accurate}. Com a diminuição dos operadores no núcleo da modelagem, o caso sequencial é viável, porém, neste trabalho, a forma paralelizada de \citeonline{detrixhe2013parallel} foi aplicada.  
 
-\section{Inversão tomográfica}
+\subsection{Modelagem do tempo de trânsito em volumes esparsos}
 
-Nas seções anteriores, a modelagem direta foi explorada exemplificando maneiras de como calcular o dado de primeira chegada, ou seja, as ondas transmitidas e refratadas. Contudo, na natureza a subsuperfície não é conhecida e, para realizar os estudos de investigação, somente os registros sísmicos na superfície terrestre são obtidos. A tomografia sísmica pode ser explorada utilizando diferentes formas de onda, como por exemplo as ondas refletidas, difratadas e refratadas. \citeonline{murphy1999manual} resumem as estratégias da tomografia de reflexão, \citeonline{santos2012tomography} comentam sobre as vantagens da tomografia de difração, \citeonline{almeida2013tomografia} e \citeonline{capucci2013tomografia} desenvolvem experimentos relacionados com a tomografia de refração. Todos esses casos partem do mesmo objetivo: minimizar a diferença entre o dado observado e o dado calculado.  Aspectos práticos do método tomográfico são amplamente descritos no trabalho de \citeonline{sain2023active}. De maneira geral o dado artificial pode ser gerado pela equação
+Ao empregar soluções numéricas da equação eikonal em modelos de malha esparsa, o cálculo do tempo analítico na fonte desempenha um papel essencial na determinação precisa dos tempos de chegada das ondas sísmicas em pontos específicos. Sabendo a posição da fonte, o pré condicionamento realizado seria a inicialização dos pontos da malha em torno da fonte com tempos analíticos considerando uma velocidade constante seguindo a equação
 \begin{equation}
-	d^{cal} = \displaystyle\int_{raio} s\,dr = g(m),
-\end{equation}
-\noindent onde $d^{cal}$ é o dado calculado que pode ser estimado a partir da soma infinitesimal de segmentos de raio $dr$ vezes a vagarosidade $s$. O operador de modelagem direta $g(m)$ tem características não lineares pois os raios propagados dependem do modelo de vagarosidade $m$ \cite{seo2012nonlinear}. Este modelo pode representar diferentes formatos no momento da inversão, desde células ou pontos de malha até equações analíticas como no trabalho de \citeonline{daiana} que parametrizam o modelo com a soma de funções de base radial, sendo que para este trabalho a discretização por pontos de malha foi considerada. 
-
-A função objetivo da tomografia utilizando a norma euclidiana de ordem 2 pode ser formulada da seguinte maneira
-\begin{equation}
-	\chi(m) = \dfrac{1}{2}\left[d^{obs} - g(m)\right]^T\left[d^{obs} - g(m)\right] = \displaystyle\sum_{n = 0}^N(d^{obs}_n - g_n(m))^2, 
-	\label{objectiveFunction}
+	T_a = S_f \sqrt{(x_g - x_f)^2 + (y_g - y_f)^2 + (z_g - z_f)^2}, 
+	\label{analyticalT}
 \end{equation} 
-\noindent sendo $d^{obs}_n$ o dado observado para cada estação $n$. De forma clássica, a inversão tomográfica pode ser linearizada por um modelo inicial e, após a aplicação da expansão em série de Taylor de segunda ordem da equação \ref{objectiveFunction}, pode-se resolver iterativamente sistemas lineares utilizando a aproximação de Gauss-Newton \cite{tarantola2005inverse, menke2018geophysical, aster2018parameter}. O sistema linear é formado pela aproximação da matriz Hessiana, a segunda derivada da função objetivo, e pelo gradiente da equação \ref{objectiveFunction}. O objetivo é estimar as pequenas variações do modelo de vagarosidade de acordo com a diferença entre o dado observado e calculado de forma iterativa. Em formato de equação, o núcleo da inversão pode ser formulado pela seguinte expressão 
-\begin{equation}
-	G^TG \Delta m_p = G^T\Delta d_p, 		
-	\label{linearSystem}
-\end{equation} 
-\noindent onde $G^TG$ é a aproximação da Hessiana, $\Delta m_p$ é a variação do modelo na iteração $p$, $\Delta d_p$ é a variação do dado na iteração $p$ e $G^T\Delta d$ é a aproximação do gradiente da equação \ref{objectiveFunction}. A matriz $G$ é esparsa contendo as distâncias percorridas para cada raio por elemento de modelo a cada iteração. Como os elementos de modelo são cubos ou paralelepípedos no caso 3D, a matriz $G$ tem o tamanho em linhas, a quantidade de raios projetados na simulação, e em colunas, a quantidade de parâmetros do modelo. Resolvendo o problema iterativamente, no instante inicial, um modelo a priori é considerado e a modelagem por equação eikonal é realizada. Com o volume de tempo de trânsito, o traçado de raios pode ser realizado a partir de que os raios se propaguem perpendicularmente às isócronas de tempo \cite{vidale1988finite}. O traçado de raios via equação eikonal pode ser formulado, em três dimensões, da maneira a seguir
-\begin{equation}
-	\begin{cases}
-		x_i = x_{i-1} + \alpha\,\, \partial_x\, T \,/\, ||\nabla T|| \\ 
-		y_i = y_{i-1} + \alpha\,\, \partial_y\, T \,/\, ||\nabla T|| \\ 
-		z_i = z_{i-1} + \alpha\,\, \partial_z\, T \,/\, ||\nabla T||. 
-	\end{cases}
-	\label{rayTracing}
-\end{equation}
-\noindent Considerando um raio possuindo coordenadas $x$, $y$ e $z$ na posição $i$, a próxima coordenada pode ser estimada a partir da posição anterior somada a um tamanho de passo $\alpha$ definido em metros multiplicado pela derivada do tempo de trânsito normalizada.  
+\noindent onde $T_a$ é o tempo analítico, $S_f$ é a vagarosidade en torno da fonte, $x_g,y_g$ e $z_g$ são as coordenadas dos pontos da malha em metros e $x_f,y_f$ e $z_f$ são as coordenadas da fonte. Assim no início das operações do calculo dos tempos, assumimos que os pontos vizinhos da fonte estão com os tempos corretos pronto para serem propagados numericamente.    
 
-Para garantir uma solução única em uma equação normal, onde a função objetivo pode ser formulada por
+A aplicação da interpolação trilinear nos receptores é uma estratégia fundamental para estimar os tempos de trânsito em pontos de observação distantes, nos quais a resolução espacial dos dados é limitada devido à natureza de modelos esparsos. Apesar da característica esférica, a interpolação trilinear consegue recuperar as estruturas dos tempos de trânsito em pontos fora da malha. Essa estratégia se baseia na função a seguir
 \begin{equation}
-	\chi(m) = \text{min}||d^{obs} -g(m)||^2_2,
-\end{equation}
-\noindent é necessário que a matriz Hessiana tenha posto completo, ou seja, que suas colunas (ou linhas) sejam linearmente independentes. No entanto, em problemas geofísicos, é comum que a matriz do sistema tenha um determinante próximo de zero, o que indica falta de posto completo. Isso torna o problema inverso geofísico mal posto, apresentando instabilidade e falta de unicidade na solução. A instabilidade refere-se à alta variabilidade do modelo estimado quando há pequenas variações nos dados observados. A falta de unicidade implica que existem vários conjuntos de modelos estimados que produzem os mesmos dados observados. Na prática, isso significa que há vários modelos diferentes que minimizam a função de objetivo. Problemas inversos na geofísica geralmente são mal postos devido ao ruído nos dados observados, à geometria de aquisição e à própria natureza do problema inverso. Para lidar com esses problemas, é essencial usar regularização, um procedimento matemático que contorna a instabilidade e a falta de unicidade em problemas inversos mal postos. A regularização impõe restrições aos parâmetros estimados, buscando encontrar um conjunto de parâmetros que se ajustem aos dados observados e satisfaçam as restrições estabelecidas, que podem ser de natureza geológica ou matemática e são introduzidas por meio de funções regularizadoras. Para mais informações sobre regularização, os trabalhos de \citeonline{tarantola2005inverse} e \citeonline{aster2018parameter} são excelentes para consulta.   
+	f(x,y,z) \approx a_{0} + a_{1}x + a_{2}y + a_{3}z + a_{4}xy + a_{5}xz + a_{6}yz + a_{7}xyz},
+	\label{trilinear}
+\end{equation}  
+\noindent sendo $(x,y,z)$ a posição desejada e $a_i$ os coeficientes que governam as propriedades naquela região. Então, de acordo com o sistema linear abaixo 
 
-A regularização de Tikhonov foi utilizada neste trabalho e o equacionamento geral do esquema pode ser formulado da seguinte maneira
 \begin{equation}
-	\chi(m) = \text{min}||d^{obs} - g(m)||^2_2 +\lambda||Rm||^2_2,
-\end{equation}
-\noindent onde $\lambda$ é um escalar que controla a importância relativa da regularização e $R$ representa uma matriz com operadores de derivada. O problema \ref{linearSystem} regularizado pode ser equacionado no formato a seguir
-\begin{equation}
-	(G^TG + \lambda^2 R^TR)\Delta m = G^T \Delta d.
-\end{equation}
-\noindent A regularização de Tikhonov pode ser aplicada em ordens específicas de acordo com o operador de derivada. A matriz $R$ de ordem zero pode escrita da seguinte forma
-\begin{equation}
-	R_0 = 
 	\begin{bmatrix}
-		1 & 0 & 0 & \cdots & 0 \\
-		0 & 1 & 0 & \cdots & 0 \\
-		\vdots & \vdots & \vdots & \ddots & \vdots \\
-		0 & 0 & 0 & \cdots & 1 \\
+		1 & x_0 & y_0 & z_0 & x_0y_0 & x_0z_0 & x_0y_0 & x_0y_0z_0 \\
+		1 & x_1 & y_0 & z_0 & x_1y_0 & x_1z_0 & x_0y_0 & x_1y_0z_0 \\
+		1 & x_0 & y_1 & z_0 & x_0y_1 & x_0z_0 & x_1y_0 & x_0y_1z_0 \\
+		1 & x_1 & y_1 & z_0 & x_1_y_1 & x_1z_0 & x_1y_0 & x_1y_1z_0 \\
+		1 & x_0 & y_0 & z_1 & x_0y_0 & x_0z_1 & x_0y_1 & x_0y_0z_1 \\
+		1 & x_1 & y_0 & z_1 & x_1y_0 & x_1z_1 & x_0y_1 & x_1y_0z_1 \\
+		1 & x_0 & y_1 & z_1 & x_0y_1 & x_0z_1 & x_1y_1 & x_0y_1z_1 \\
+		1 & x_1 & y_1 & z_1 & x_1y_1 & x_1z_1 & x_1y_1 & x_1y_1z_1 \\
 	\end{bmatrix}
-	_{M\times M},
-\end{equation}
-\noindent onde seu tamanho depende da quantidade dos parâmetros do modelo $M$. Altas ordens de derivada podem ser aplicadas na regularização de Tikhonov, porém as mais comuns são de zero, primeira e segunda ordens. Neste trabalho a aplicação da regularização de Tikhonov de segunda ordem foi aplicada pois em \citeonline{bulhoes2021efeitos}, esse tipo de regularização demonstrou uma convergência mais rápida em relação às ordens inferiores. Para efeito ilustrativo, a matriz $R$ com operadores de segunda ordem pode ser formulada da seguinte maneira
-\begin{equation}
-	R_2 = 
 	\begin{bmatrix}
-		1      & -2     & 1      & 0      & 0      & \cdots & 0      & 0      & 0 \\
-		0      & 1      & -2     & 1      & 0      & \cdots & 0      & 0      & 0 \\
-		0      & 0      & 1      & -2     & 1      & \cdots & 0      & 0      & 0 \\
-		\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
-		0      & 0      & 0      & 0      & 0      & \cdots & 1      & -2     & 1 \\
+		a_0 \\
+		a_1 \\
+		a_2 \\
+		a_3 \\
+		a_4 \\
+		a_5 \\
+		a_6 \\
+		a_7 \\
 	\end{bmatrix}
-	_{(M-2)\times M},
+	= \begin{bmatrix}
+		T_{000} \\
+		T_{100} \\
+		T_{010} \\
+		T_{110} \\
+		T_{001} \\
+		T_{101} \\
+		T_{011} \\
+		T_{111} \\
+	\end{bmatrix},
 \end{equation}
-\noindent com tamanho de linhas reduzidas de acordo com a ordem do operador. Mais exemplos clássicos de regularização aplicados no método da tomografia sísmica podem ser encontrados no trabalho de \citeonline{yao1999practical}. Uma contribuição interessante de regularização é a aplicação conjunta de dois regularizadores: Tikhonov e variação total. \citeonline{lin2014acoustic} iniciam os estudos para inversão completa do campo de onda, \citeonline{jiang20183d} aplicam a regularização de Tikhonov para estabilizar o problema inverso e, em conjunto, aplicam a regularização por variação total para recuperar os altos contrastes, por consequência da regularização de Tikhonov possuir efeitos suavizadores.   
 
-Em problemas tomográficos não lineares, a cada iteração se resolve um sistema linear, no qual dependendo dos aspectos do dado observado e da discretização do modelo, a aproximação da matriz Hessiana pode se tornar inviável computacionalmente. Para resolver o problema de forma barata, duas estratégias podem ser aplicadas: a técnica de resolver um problema de mínimos quadrados sem calcular a matriz Hessiana e o armazenamento de matrizes esparsas. A matriz $G$ contendo as distâncias percorridas pelos raios a cada célula pertencente ao modelo de velocidade têm aspectos esparsos, pois cada raio ilumina poucas células no modelo de velocidade. Então a matriz $G$ pode ser ordenada utilizando alguma técnica de armazenamento esparso. A técnica utilizada neste trabalho foi armazenar as coordenadas completas em duas listas e uma terceira lista contendo os elementos não nulos da matriz. Essa técnica é relativamente mais cara do que as demais existentes, como a CSR (\textit{Compress Sparse Row}) ou a CSC (\textit{Compress Sparse Column}), porém, as operações de multiplicação são mais amigáveis de se implementar \cite{saad2003iterative}. Apesar da matriz $G$ possuir características esparsas, a esparsidade da matriz $G^TG$ não é alta. A técnica de resolução do problema de mínimos quadrados sem o cálculo da matriz $G^TG$ se torna extremamente aplicável no caso da tomografia sísmica de refração \cite{hestenes1952methods, saad2003iterative, capucci2013tomografia}.
-
-A estrutura do algoritmo de tomografia é ilustrada na Figura \ref{tomography_chart}. Inicialmente a leitura dos dados observados é realizada. Após a importação do modelo inicial, a solução eikonal é efetuada para coletar os tempos de trânsito em cada receptor, gerando o dado calculado. Assim o resíduo pode ser efetuado e, em seguida, a otimização pode ser realizada com a solução do problema de mínimos quadrados, recuperando a variação do modelo de vagarosidade. Uma etapa adicional pode ser aplicada para suavizar o modelo de vagarosidade caso a recuperação tenha gerado artefatos ou se a malha de inversão for esparsa. A suavização utilizando a equação gaussiana foi utilizada neste trabalho. Em seguida, a atualização do modelo pode ser efetuada adicionando a variação recuperada ao modelo de vagarosidade da iteração anterior. 
-     
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=7.5cm, height=12cm]{Imgs/RevisaoBibliografica/tomography_chart.png}
-	\caption{Esquema tomográfico de acordo com o equacionamento apresentado.}
-	\label{tomography_chart}
-\end{figure}
-
-A etapa de convergência pode considerar o número de iterações desejadas ou uma tolerância específica da norma da função objetivo como critério de parada. Se a convergência for significativa respeitando uma das condições, o processo exporta o modelo final de velocidade e a curva de convergência e, se não respeitar as condições, o processo tomográfico realiza uma nova iteração utilizando o modelo atualizado. 
-
-\subsection{Obtenção do dado observado}
-
-O sismograma completo adquirido no campo não é completamente necessário para a realização da tomografia, somente os pares ($x$,$t$) que compõem as primeiras chegadas. A recuperação dessas posições pode ser obtida manualmente, com a seleção manual da primeira chegada. Contudo, essa estratégia consome tempo demasiado em aquisições de larga escala. Duas estratégias são capazes de substituir a abordagem manual de seleção da primeira chegada: as formulações baseadas em amplitude, energia e espectro dos dados e as formulações por aprendizado de máquina e inteligência artificial. \citeonline{sabbione2010automatic} sumarizam as principais estratégias analíticas para a seleção de dados de primeira chegada e, mais atualmente, \citeonline{ayub2021comparative} comparam as técnicas de aprendizado de máquina e inteligência artificial desenvolvidas. \citeonline{yuan2022segnet} apresentam uma abordagem interessante para solucionar os problemas de traços irregulares e altos ruídos em seleções automáticas de primeira chegada utilizando inteligencia artificial, já que a abordagem analítica pode gerar artefatos com dados ruidosos. 
-
-Considerando a utilização de dados sintéticos, a formulação aplicada neste trabalho é analítica baseada no somatório da energia do dado em janelas de varredura temporal. \citeonline{pan2019automatic} calculam dois parâmetros relacionados com o traço sísmico 
-\begin{equation}
-	A = \displaystyle\sum_{k=i-n}^{k=i} T_k;\,\,\,\,\,\, B = \displaystyle\sum_{k=i}^{k=i+n} T_k, 
-\end{equation} 
-\noindent onde $i$ é a amostra de tempo atual, $n$ é o tamanho da janela temporal em amostras e $T_k$ é a amplitude do traço na amostra $k$. Assim as variáveis $A$ e $B$ são aplicadas na seguinte equação
-\begin{equation}
-	F = |(B / A)\times(B - A)|,
-\end{equation} 
-\noindent sendo $F$ a indicação de existência de primeiras chegadas no dado. \citeonline{qin2021first} adicionam novos termos para se obter indicações de primeiras chegadas mais precisas formulando a equação
-\begin{equation}
-	F = F\times(B + A)\times(B/A)\times(B-A)/(n+i)^2, 
-	\label{automatic_picking}
-\end{equation}
-\noindent onde $n$ e $i$ são o tamanho da janela em amostras e a amostra de tempo atual, respectivamente. Com a equação \ref{automatic_picking} aplicada traço a traço e a cada passo no tempo se observa um sismograma com as mudanças de energia em forma de funções delta de Dirac, sendo que a primeira ocorrência será o tempo da primeira chegada.   
+\noindent onde $T_{ijk}$ são os tempos de trânsito e $(x_i,y_i,z_i)$ as respectivas posições dos tempos conhecidos, os coeficientes para a equação \ref{trilinear} podem ser encontrados.  
