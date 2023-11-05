@@ -5,16 +5,17 @@
 \begin{resumo}[Abstract]
     \begin{otherlanguage*}{english}
 
-\begin{flushleft}
-\MakeUppercase{\imprimirSobrenome}, \imprimirPrimeirosNomes. \textbf{\imprimirTituloEmIngles}. \imprimirtipotrabalhoIngles, \imprimirinstituicaoIngles. \imprimirlocal,  p. \pageref{LastPage}. \imprimirAnoDeDefesa.
-\end{flushleft}
+	\begin{flushleft}
+	\MakeUppercase{\imprimirSobrenome}, \imprimirPrimeirosNomes. \textbf{\imprimirTituloEmIngles}. \imprimirtipotrabalhoIngles, \imprimirinstituicaoIngles. \imprimirlocal,  p. \pageref{LastPage}. \imprimirAnoDeDefesa.
+	\end{flushleft}
 
-        \fonteResumo
-		text here
+    \fonteResumo
+	This study evaluates the accuracy and computational efficiency of three distinct methods for solving the eikonal equation, which represents a high-frequency approximation of the wave equation in acoustic media with constant density. The analyzed numerical methods consist, firstly, of a well-established classical formulation in the literature; secondly, a method with limited exploration in the realm of geosciences, albeit with significant computational performance; and finally, the innovation developed in this study, the combination of two formulations to generate a precise and efficient computational approach. The implementation of these formulations, using parallel programming on graphics processing units, required rigorous validation of solution accuracy to ensure the viability of the numerical methods in complex three-dimensional contexts. To verify the accuracy of the solutions, three strategies were adopted, including the application of the methods in a homogeneous model, in which a recent formulation was tested in a restricted manner, the evaluation in a two-layer model with variations in size, allowing analysis of algorithm scalability, and finally, the analysis in a realistic model that incorporates complex geology, providing detailed results on computational efficiency. Among all the examined formulations, the Fast Sweeping Method stood out for its remarkable accuracy in calculating travel times, driven by the use of accurate operators parallelized on graphics processing units.
     
-        \vspace{\onelineskip}
+    \vspace{\onelineskip}
      
-        \noindent 
-        \textbf{Keywords}: eikonal equation; seismic refraction; analytical-numerical comparison; high performance computing.
+    \noindent 
+    \textbf{Keywords}: eikonal equation; seismic refraction; analytical-numerical comparison; high performance computing.
+    
     \end{otherlanguage*}
 \end{resumo}
